@@ -3,6 +3,9 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js';
 
+// Add this near the top of your file, after imports
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 // Scene setup
 const scene = new THREE.Scene();
 
@@ -805,7 +808,10 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Set raycaster precision for sprites
-    raycaster.params.Sprite = { threshold: 1.5 };
+    // raycaster.params.Sprite = { threshold: 1.5 };
+        
+    // Adjust threshold based on device type
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 7.0 : 1.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -977,7 +983,8 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: 1.5 }; // Add threshold setting
+    // raycaster.params.Sprite = { threshold: 1.5 }; // Add threshold setting
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 7.0 : 1.5 }; // Dynamic threshold
     
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
@@ -1088,7 +1095,10 @@ canvas.addEventListener('pointerup', (event) => {
     handleInteraction(event);
 }, { passive: false, capture: true });
 
-// canvas.addEventListener('click', handleInteraction);
+canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    handleInteraction(event);
+}, { passive: false });
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());
