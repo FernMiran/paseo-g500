@@ -160,7 +160,7 @@ const panoramas = [
     {
         id: 6,
         image: './mapa/6.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.35, v: 0.3 }, target: 7 },
             { position: { u: 0.91, v: 0.2 }, target: 5 }
@@ -177,7 +177,7 @@ const panoramas = [
     {
         id: 7,
         image: './mapa/7.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.22, v: 0.7 }, target: 8 },
             { position: { u: 0.52, v: 0.3 }, target: 6 }
@@ -206,7 +206,7 @@ const panoramas = [
     {
         id: 9,
         image: './mapa/9.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.1, v: 0.2 }, target: 8 },
             { position: { u: 0.32, v: 0.4 }, target: 10 },
@@ -229,7 +229,7 @@ const panoramas = [
     {
         id: 10,
         image: './mapa/10.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.47, v: 0.3 }, target: 9 },
             { position: { u: 0.8, v: 0.3 }, target: 11 }
@@ -246,7 +246,7 @@ const panoramas = [
     {
         id: 11,
         image: './mapa/11.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.1, v: 0.3 }, target: 10 },
             { position: { u: 0.4, v: 0.6 }, target: 12 },
@@ -299,7 +299,7 @@ const panoramas = [
     {
         id: 14,
         image: './mapa/14.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.08, v: 0.7 }, target: 13 },
             { position: { u: 0.38, v: 0.3 }, target: 15 }
@@ -310,7 +310,7 @@ const panoramas = [
     {
         id: 15,
         image: './mapa/15.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.1, v: 0.6 }, target: 14 },
             { position: { u: 0.55, v: 0.4 }, target: 16 }
@@ -339,7 +339,7 @@ const panoramas = [
     {
         id: 17,
         image: './mapa/17.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.12, v: 0.4 }, target: 18 },
             { position: { u: 0.75, v: 0.4 }, target: 16 }
@@ -379,7 +379,7 @@ const panoramas = [
     {
         id: 20,
         image: './mapa/20.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.9, v: 0.3 }, target: 1 }
         ],
@@ -517,7 +517,7 @@ const panoramas = [
     {
         id: 121,
         image: './mapa/121.jpg',
-        music: './audio0.wav',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.6, v: 0.3 }, target: 2 }
         ],
