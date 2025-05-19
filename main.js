@@ -692,9 +692,11 @@ function createInfospots(infospots) {
         const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
         sprite.position.copy(position);
 
-        sprite.scale.copy(hotspotAnimations.normalScale);
-        // sprite.scale.set(50, 50, 1);
-        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
+        // sprite.scale.copy(hotspotAnimations.normalScale);
+        sprite.scale.set(
+            hotspotAnimations.normalScale.x * window.devicePixelRatio, 
+            hotspotAnimations.normalScale.y * window.devicePixelRatio,
+        );
         // Add visual feedback for debugging
         sprite.material.color = hotspotAnimations.normalColor.clone();
         
@@ -721,9 +723,11 @@ function createHotspots(hotspots) {
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
 
-        sprite.scale.copy(hotspotAnimations.normalScale);
-        // sprite.scale.set(50, 50, 1);
-        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
+        // sprite.scale.copy(hotspotAnimations.normalScale);
+        sprite.scale.set(
+            hotspotAnimations.normalScale.x * window.devicePixelRatio, 
+            hotspotAnimations.normalScale.y * window.devicePixelRatio,
+        );
         // Add visual feedback for debugging
         sprite.material.color = hotspotAnimations.normalColor.clone();
         
@@ -1076,8 +1080,6 @@ const canvas = renderer.domElement;
 canvas.addEventListener('pointerdown', (event) => {
     // Prevent default behavior to avoid any unwanted navigation (scroll/zoom)
     event.preventDefault();
-    
-    // Handle interaction
     handleInteraction(event);
 }, { passive: false });
 
