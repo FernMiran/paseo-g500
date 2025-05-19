@@ -21,6 +21,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio); // Enhance sharpness on high-DPI displays
 document.body.appendChild(renderer.domElement);
 
+renderer.domElement.style.touchAction = 'none'; // Disable touch actions on the canvas
+
 // Create a cylindrical panorama instead of a sphere
 // This will give a more flat view for wide panoramic images
 const radius = 500;
