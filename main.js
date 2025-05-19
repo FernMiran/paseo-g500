@@ -801,7 +801,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Set raycaster precision for sprites
-    raycaster.params.Sprite = { threshold: 1.0 };
+    raycaster.params.Sprite = { threshold: 1.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -973,7 +973,7 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: 1.0 }; // Add threshold setting
+    raycaster.params.Sprite = { threshold: 1.5 }; // Add threshold setting
     
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
@@ -1080,6 +1080,11 @@ canvas.addEventListener('pointerdown', (event) => {
     // Handle interaction
     handleInteraction(event);
 }, { passive: false });
+
+canvas.addEventListener('pointerup', (event) => {
+    event.preventDefault();
+    handleInteraction(event);
+}, { passive: false, capture: true });
 
 // canvas.addEventListener('click', handleInteraction);
 
