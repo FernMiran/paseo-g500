@@ -997,6 +997,8 @@ function handleInteraction(event) {
         const target = intersects[0].object.userData.target;
         if (intersects.length > 0) {
             const object = intersects[0].object;
+            console.log(intersects)
+
             if (object.userData.type === 'hotspot') 
             {
                 loadPanorama(object.userData.target);
