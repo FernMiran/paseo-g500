@@ -67,7 +67,7 @@ scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
 
 // Define panoramas with hotspots
-const hostpotRadius = radius - 10;
+const hostpotRadius = 50;
 const panoramas = [
     {
         id: 1,
@@ -658,10 +658,8 @@ const spriteMaterial = new THREE.SpriteMaterial({
 
 // Animation parameters for hotspots
 const hotspotAnimations = {
-    baseSize: 30,
-
-    normalScale: new THREE.Vector2(40, 40),
-    hoverScale: new THREE.Vector2(90, 90),
+    normalScale: new THREE.Vector2(5, 5),
+    hoverScale: new THREE.Vector2(10, 10),
 
     pulseSpeed: 0.3,
     pulseAmount: 0.05,
@@ -676,14 +674,14 @@ const hotspotAnimations = {
 };
 
 // Function to compute 3D position from UV coordinates for a cylinder
-function computePosition(u, v) {
+function computePosition(u, v, distance) {
     const phi = (1 - u) * 2 * Math.PI; // Horizontal angle (0 to 2π)
-    const height = radius * 1.2; // Match cylinder height
+    const height = distance * 1.2; // Match cylinder height
     
     // For cylindrical mapping
-    const x = radius * Math.sin(phi);
+    const x = distance * Math.sin(phi);
     const y = height * (v - 0.5); // Map v from 0-1 to -height/2 to height/2
-    const z = radius * Math.cos(phi);
+    const z = distance * Math.cos(phi);
     
     return new THREE.Vector3(x, y, z);
 }
@@ -692,7 +690,7 @@ function createInfospots(infospots) {
     infospotsGroup.remove(...infospotsGroup.children);
     
     infospots.forEach(infospot => {
-        const position = computePosition(infospot.position.u, infospot.position.v, hostpotRadius);
+        const position = computePosition(infospot.position.u, infospot.position.v, radius);
         const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
         sprite.position.copy(position);
 
@@ -701,7 +699,7 @@ function createInfospots(infospots) {
             hotspotAnimations.normalScale.x * window.devicePixelRatio, 
             hotspotAnimations.normalScale.y * window.devicePixelRatio,
         );
-        // Add visual feedback for debugging
+
         sprite.material.color = hotspotAnimations.normalColor.clone();
         
         sprite.userData = {
@@ -958,8 +956,11 @@ function handleInteraction(event) {
         if (event.touches.length > 0) {
             x = event.touches[0].clientX;
             y = event.touches[0].clientY;
+            
+            console.log('touch start');
         } else {
             // If no touches are available (e.g., touchend)
+            console.log('touch end');
             return;
         }
     } else {
@@ -977,7 +978,7 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 }; // Dynamic threshold
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 };
     
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
@@ -1071,9 +1072,6 @@ function handleInteraction(event) {
         }, 200);
     }
 }
-
-// window.addEventListener('click', handleInteraction);
-// window.addEventListener('touchend', handleInteraction);
 
 const canvas = renderer.domElement;
 
