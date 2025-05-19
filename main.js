@@ -799,7 +799,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Set raycaster precision for sprites
-    raycaster.params.Sprite = { threshold: 0.5 };
+    raycaster.params.Sprite = { threshold: 1.0 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -971,12 +971,15 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
+    raycaster.params.Sprite = { threshold: 1.0 }; // Add threshold setting
+    
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
         ...infospotsGroup.children
     ]);
 
     if (intersects.length > 0) {
+        event.stopPropagation(); // Prevent event from bubbling up
         // Get target panorama ID from the clicked hotspot
         const target = intersects[0].object.userData.target;
         if (intersects.length > 0) {
