@@ -63,6 +63,8 @@ scene.add(cylinder);
 const hotspotsGroup = new THREE.Group();
 const infospotsGroup = new THREE.Group();
 
+const hitAreasGroup = new THREE.Group();
+
 scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
 
@@ -687,21 +689,30 @@ function computePosition(u, v, distance) {
 }
 
 function createInfospots(infospots) {
-    infospotsGroup.remove(...infospotsGroup.children);
+    console.log('Creating infospots:', infospots);
     
-    infospots.forEach(infospot => {
-        const position = computePosition(infospot.position.u, infospot.position.v, radius);
-        const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
-        sprite.position.copy(position);
+    infospotsGroup.remove(...infospotsGroup.children);
+    hitAreasGroup.remove(...hitAreasGroup.children);
 
-        // sprite.scale.copy(hotspotAnimations.normalScale);
+    infospots.forEach(infospot => {
+        const position = computePosition(infospot.position.u, infospot.position.v, hostpotRadius);
+        
+        // Create the visible sprite
+        const sprite = new THREE.Sprite(infoSpriteMaterial.clone());
+        sprite.position.copy(position);
+        sprite.material.color = hotspotAnimations.normalColor.clone();
         sprite.scale.set(
             hotspotAnimations.normalScale.x * window.devicePixelRatio, 
             hotspotAnimations.normalScale.y * window.devicePixelRatio,
         );
-
-        sprite.material.color = hotspotAnimations.normalColor.clone();
+        infospotsGroup.add(sprite); 
         
+        // Create an invisible hit area
+        const hitGeometry = new THREE.SphereGeometry(50, 8, 8); // Radius 50 units
+        const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
+        const hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
+        hitMesh.position.copy(position);
+
         sprite.userData = {
             type: 'infospot',
             title: infospot.title,
@@ -712,27 +723,36 @@ function createInfospots(infospots) {
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2 
         };
-        infospotsGroup.add(sprite);
+
+        hitAreasGroup.add(hitMesh);
     });
 }
 
 // Function to create hotspots
 function createHotspots(hotspots) {
+    console.log('Creating hotspots:', hotspots);
+
     hotspotsGroup.remove(...hotspotsGroup.children);
     
     hotspots.forEach(hotspot => {
         const position = computePosition(hotspot.position.u, hotspot.position.v, hostpotRadius);
+        
+        // Create the visible sprite
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
-
-        // sprite.scale.copy(hotspotAnimations.normalScale);
+        sprite.material.color = hotspotAnimations.normalColor.clone();
         sprite.scale.set(
             hotspotAnimations.normalScale.x * window.devicePixelRatio, 
             hotspotAnimations.normalScale.y * window.devicePixelRatio,
         );
-        // Add visual feedback for debugging
-        sprite.material.color = hotspotAnimations.normalColor.clone();
-        
+        hotspotsGroup.add(sprite);
+
+        // Create an invisible hit area
+        const hitGeometry = new THREE.SphereGeometry(50, 8, 8); // Radius 50 units
+        const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
+        const hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
+        hitMesh.position.copy(position);
+
         sprite.userData = { 
             target: hotspot.target, 
             type: 'hotspot',
@@ -741,7 +761,7 @@ function createHotspots(hotspots) {
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2  
         };
-        hotspotsGroup.add(sprite);
+        hitAreasGroup.add(hitMesh);
     });
 }
 
@@ -807,7 +827,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Adjust threshold based on device type
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 };
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -960,7 +980,7 @@ function handleInteraction(event) {
             console.log('touch start');
         } else {
             // If no touches are available (e.g., touchend)
-            console.log('touch end');
+            console.log('no touches available. touch end');
             return;
         }
     } else {
@@ -978,20 +998,19 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 };
+    // Adjust threshold based on device type
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
     
+    // const intersects = raycaster.intersectObjects(hitAreasGroup.children);
     const intersects = raycaster.intersectObjects([
-        ...hotspotsGroup.children,
+        ...hotspotsGroup.children, 
         ...infospotsGroup.children
     ]);
-
+    
     console.log(intersects)
 
     if (intersects.length > 0) {
-        event.stopPropagation(); // Prevent event from bubbling up
-        // Get target panorama ID from the clicked hotspot
         const object = intersects[0].object;
-
         if (object.userData.type === 'hotspot') 
         {
             loadPanorama(object.userData.target);
