@@ -627,7 +627,7 @@ const infoSpriteMaterial = new THREE.SpriteMaterial({
 
 const iconTexture = textureLoader.load('./location.svg', (texture) => {
     // FIX: Ensure texture is properly loaded with error handling
-    console.log('Hotspot icon loaded successfully');
+    console.log('[Setup] Hotspot icon texture loaded successfully');
     
     // Add custom CSS for the canvas to show pointer cursor on hover
     const canvasStyle = document.createElement('style');
@@ -809,7 +809,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Adjust threshold based on device type
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 7.0 : 1.5 };
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -977,7 +977,7 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 7.0 : 1.5 }; // Dynamic threshold
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 10.0 : 1.5 }; // Dynamic threshold
     
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
