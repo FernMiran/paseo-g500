@@ -799,7 +799,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Set raycaster precision for sprites
-    raycaster.params.Sprite = { threshold: 0.3 };
+    raycaster.params.Sprite = { threshold: 0.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -1076,9 +1076,7 @@ canvas.addEventListener('pointerdown', (event) => {
     handleInteraction(event);
 }, { passive: false });
 
-canvas.addEventListener('click', handleInteraction);
-
-// Add click event listener for hotspots
+// canvas.addEventListener('click', handleInteraction);
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());
