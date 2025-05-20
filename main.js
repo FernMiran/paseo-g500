@@ -1,12 +1,7 @@
+/* Panoramic view version 0.1.1 */
+
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js';
-
-// Add this near the top of your file, after imports
-const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-
-if (isTouchDevice) {
-    console.log('Running on a touch device');
-}
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -24,11 +19,11 @@ camera.position.set(0, 0, 0.1); // Small offset to avoid control issues
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio); // Enhance sharpness on high-DPI displays
+renderer.outputColorSpace = THREE.SRGBColorSpace; // <<< Add this line
 document.body.appendChild(renderer.domElement);
 
-renderer.domElement.style.touchAction = 'none'; // Disable touch actions on the canvas
-
-// Create a cylindrical panorama
+// Create a cylindrical panorama instead of a sphere
+// This will give a more flat view for wide panoramic images
 const radius = 500;
 const widthSegments = 60;
 const heightSegments = 40;
@@ -63,13 +58,11 @@ scene.add(cylinder);
 const hotspotsGroup = new THREE.Group();
 const infospotsGroup = new THREE.Group();
 
-const hitAreasGroup = new THREE.Group();
-
 scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
 
 // Define panoramas with hotspots
-const hostpotRadius = 50;
+const hostpotRadius = radius - 10;
 const panoramas = [
     {
         id: 1,
@@ -127,12 +120,12 @@ const panoramas = [
     {
         id: 4,
         image: './mapa/4.jpg',
-        music: './audio4.mp3',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.08, v: 0.3 }, target: 3 },
             { position: { u: 0.1, v: 0.2 }, target: 22 },
             { position: { u: 0.4, v: 0.2 }, target: 5 },
-            { position: { u: 0.6, v: 0.2 }, target: 8 }
+            { position: { u: 0.6, v: 0.4 }, target: 8 }
         ],
         infospots: [
         ]
@@ -142,7 +135,7 @@ const panoramas = [
         image: './mapa/5.jpg',
         music: './audio/2.m4a',
         hotspots: [
-            { position: { u: 0.38, v: 0.3 }, target: 6 },
+            { position: { u: 0.38, v: 0.4 }, target: 6 },
             { position: { u: 0.77, v: 0.2 }, target: 4 }
         ],
         infospots: [
@@ -153,8 +146,26 @@ const panoramas = [
                 description:  ''
             },
             {
-                position: { u: 0.35, v: 0.35 }, 
-                image: './mapa/5/5a.jpg',
+                position: { u: 0.34, v: 0.35 }, 
+                image: './mapa/5/5b.jpg',
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.36, v: 0.4 }, 
+                image: [ './mapa/5/5c.jpg', './mapa/5/5d.jpg', './mapa/5/5e.jpg', './mapa/5/5f.jpg' ],
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.4, v: 0.4 }, 
+                image: [ './mapa/5/5g.jpg', './mapa/5/5h.jpg' ],
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.42, v: 0.35 }, 
+                image: './mapa/5/5i.jpg',
                 title:  '',
                 description:  ''
             }
@@ -163,7 +174,7 @@ const panoramas = [
     {
         id: 6,
         image: './mapa/6.jpg',
-        music: './audio0.mp3',
+        music: './audio/3a.m4a',
         hotspots: [
             { position: { u: 0.35, v: 0.3 }, target: 7 },
             { position: { u: 0.91, v: 0.2 }, target: 5 }
@@ -197,7 +208,7 @@ const panoramas = [
     {
         id: 8,
         image: './mapa/8.jpg',
-        music: './audio/4.m4a',
+        music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.1, v: 0.3 }, target: 7 },
             { position: { u: 0.58, v: 0.2 }, target: 9 },
@@ -209,7 +220,7 @@ const panoramas = [
     {
         id: 9,
         image: './mapa/9.jpg',
-        music: './audio0.mp3',
+        music: './audio/4.m4a',
         hotspots: [
             { position: { u: 0.1, v: 0.2 }, target: 8 },
             { position: { u: 0.32, v: 0.4 }, target: 10 },
@@ -253,7 +264,8 @@ const panoramas = [
         hotspots: [
             { position: { u: 0.1, v: 0.3 }, target: 10 },
             { position: { u: 0.4, v: 0.6 }, target: 12 },
-            { position: { u: 0.7, v: 0.3 }, target: 13 }
+            { position: { u: 0.7, v: 0.3 }, target: 13 },
+            { position: { u: 0.9, v: 0.3 }, target: 112 }
         ],
         infospots: [
         ]
@@ -356,12 +368,13 @@ const panoramas = [
         music: './audio/16.m4a', // Change to interior only (When pocito scene is added)
         hotspots: [
             { position: { u: 0.1, v: 0.3 }, target: 17 },
+            { position: { u: 0.35, v: 0.3 }, target: 182 },
             { position: { u: 0.55, v: 0.3 }, target: 19 }
         ],
         infospots: [
             {
-                position: { u: 0.4, v: 0.3 },
-                image: [ './mapa/18/18a.jpg', './mapa/18/18b.jpg', './mapa/18/18c.jpg', './mapa/18/18d.jpg', './mapa/18/18e.jpg' ],
+                position: { u: 0.62, v: 0.3 },
+                image: [ './mapa/18/18a.jpg', './mapa/18/18b.jpg', './mapa/18/18c.jpg', './mapa/18/18d.jpg', './mapa/18/18f.jpg'],
                 title:  '',
                 description:  ''
             }
@@ -377,6 +390,12 @@ const panoramas = [
             { position: { u: 0.89, v: 0.35 }, target: 18 }
         ],
         infospots: [
+            {
+                position: { u: 0.3, v: 0.4 },
+                image: [ './mapa/19/19a.jpg', './mapa/19/19b.jpg', './mapa/19/19c.jpg', './mapa/19/19d.jpg', './mapa/19/19f.jpg'],
+                title:  '',
+                description:  ''
+            }
         ]
     },
     {
@@ -518,9 +537,20 @@ const panoramas = [
         ]
     },
     {
+        id: 112,
+        image: './mapa/112.jpg',
+        music: './audio0.mp3',
+        hotspots: [
+            { position: { u: 0.3, v: 0.4 }, target: 10 },
+            { position: { u: 0.6, v: 0.3 }, target: 13 }
+        ],
+        infospots: [
+        ]
+    },
+    {
         id: 121,
         image: './mapa/121.jpg',
-        music: './audio0.mp3',
+        music: './audio/15.m4a',
         hotspots: [
             { position: { u: 0.6, v: 0.3 }, target: 2 }
         ],
@@ -567,7 +597,47 @@ const panoramas = [
                 description:  ''
             }
         ]
-    },        
+    },
+    {
+        id: 182,
+        image: './mapa/182.jpg',
+        music: './audio/12.m4a',
+        hotspots: [
+            { position: { u: 0.1, v: 0.3 }, target: 18 }
+        ],
+        infospots: [
+            {
+                position: { u: 0.47, v: 0.2 },
+                image: './mapa/182/182a.jpg',
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.17, v: 0.2 },
+                image: './mapa/182/182b.jpg',
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.27, v: 0.2 },
+                image: './mapa/182/182c.jpg',
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.67, v: 0.2 },
+                image: './mapa/182/182d.jpg',
+                title:  '',
+                description:  ''
+            },
+            {
+                position: { u: 0.9, v: 0.2 },
+                image: './mapa/182/182e.jpg',
+                title:  '',
+                description:  ''
+            }
+        ]
+    }, 
     {
         id: 192,
         image: './mapa/192.jpg',
@@ -629,7 +699,7 @@ const infoSpriteMaterial = new THREE.SpriteMaterial({
 
 const iconTexture = textureLoader.load('./location.svg', (texture) => {
     // FIX: Ensure texture is properly loaded with error handling
-    console.log('[Setup] Hotspot icon texture loaded successfully');
+    console.log('Hotspot icon loaded successfully');
     
     // Add custom CSS for the canvas to show pointer cursor on hover
     const canvasStyle = document.createElement('style');
@@ -660,8 +730,10 @@ const spriteMaterial = new THREE.SpriteMaterial({
 
 // Animation parameters for hotspots
 const hotspotAnimations = {
-    normalScale: new THREE.Vector2(5, 5),
-    hoverScale: new THREE.Vector2(10, 10),
+    baseSize: 30,
+
+    normalScale: new THREE.Vector2(40, 40),
+    hoverScale: new THREE.Vector2(90, 90),
 
     pulseSpeed: 0.3,
     pulseAmount: 0.05,
@@ -676,43 +748,32 @@ const hotspotAnimations = {
 };
 
 // Function to compute 3D position from UV coordinates for a cylinder
-function computePosition(u, v, distance) {
+function computePosition(u, v) {
     const phi = (1 - u) * 2 * Math.PI; // Horizontal angle (0 to 2π)
-    const height = distance * 1.2; // Match cylinder height
+    const height = radius * 1.2; // Match cylinder height
     
     // For cylindrical mapping
-    const x = distance * Math.sin(phi);
+    const x = radius * Math.sin(phi);
     const y = height * (v - 0.5); // Map v from 0-1 to -height/2 to height/2
-    const z = distance * Math.cos(phi);
+    const z = radius * Math.cos(phi);
     
     return new THREE.Vector3(x, y, z);
 }
 
 function createInfospots(infospots) {
-    console.log('Creating infospots:', infospots);
-    
     infospotsGroup.remove(...infospotsGroup.children);
-    hitAreasGroup.remove(...hitAreasGroup.children);
-
+    
     infospots.forEach(infospot => {
         const position = computePosition(infospot.position.u, infospot.position.v, hostpotRadius);
-        
-        // Create the visible sprite
-        const sprite = new THREE.Sprite(infoSpriteMaterial.clone());
+        const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
         sprite.position.copy(position);
-        sprite.material.color = hotspotAnimations.normalColor.clone();
-        sprite.scale.set(
-            hotspotAnimations.normalScale.x * window.devicePixelRatio, 
-            hotspotAnimations.normalScale.y * window.devicePixelRatio,
-        );
-        infospotsGroup.add(sprite); 
-        
-        // Create an invisible hit area
-        const hitGeometry = new THREE.SphereGeometry(50, 8, 8); // Radius 50 units
-        const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
-        const hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
-        hitMesh.position.copy(position);
 
+        sprite.scale.copy(hotspotAnimations.normalScale);
+        // sprite.scale.set(50, 50, 1);
+        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
+        // Add visual feedback for debugging
+        sprite.material.color = hotspotAnimations.normalColor.clone();
+        
         sprite.userData = {
             type: 'infospot',
             title: infospot.title,
@@ -723,36 +784,25 @@ function createInfospots(infospots) {
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2 
         };
-
-        hitAreasGroup.add(hitMesh);
+        infospotsGroup.add(sprite);
     });
 }
 
 // Function to create hotspots
 function createHotspots(hotspots) {
-    console.log('Creating hotspots:', hotspots);
-
     hotspotsGroup.remove(...hotspotsGroup.children);
     
     hotspots.forEach(hotspot => {
         const position = computePosition(hotspot.position.u, hotspot.position.v, hostpotRadius);
-        
-        // Create the visible sprite
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
+
+        sprite.scale.copy(hotspotAnimations.normalScale);
+        // sprite.scale.set(50, 50, 1);
+        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
+        // Add visual feedback for debugging
         sprite.material.color = hotspotAnimations.normalColor.clone();
-        sprite.scale.set(
-            hotspotAnimations.normalScale.x * window.devicePixelRatio, 
-            hotspotAnimations.normalScale.y * window.devicePixelRatio,
-        );
-        hotspotsGroup.add(sprite);
-
-        // Create an invisible hit area
-        const hitGeometry = new THREE.SphereGeometry(50, 8, 8); // Radius 50 units
-        const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
-        const hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
-        hitMesh.position.copy(position);
-
+        
         sprite.userData = { 
             target: hotspot.target, 
             type: 'hotspot',
@@ -761,7 +811,7 @@ function createHotspots(hotspots) {
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2  
         };
-        hitAreasGroup.add(hitMesh);
+        hotspotsGroup.add(sprite);
     });
 }
 
@@ -770,8 +820,6 @@ function loadPanorama(panoramaId) {
     const panorama = panoramas.find(p => p.id === panoramaId);
     if (!panorama) return;
 
-    console.log('Loading panorama:', panoramaId);
-
     // Remove existing hotspots
     hotspotsGroup.remove(...hotspotsGroup.children);
     infospotsGroup.remove(...infospotsGroup.children);
@@ -779,6 +827,8 @@ function loadPanorama(panoramaId) {
     // Load new texture and update scene
     textureLoader.load(panorama.image, (texture) => {
 		// Apply anisotropic filtering for better quality at oblique angles
+        texture.colorSpace = THREE.SRGBColorSpace; // <<< Add this line
+
 		if (renderer.capabilities.getMaxAnisotropy) {
 			texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 		}
@@ -826,8 +876,8 @@ function updateObjectHoverEffects() {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
     
-    // Adjust threshold based on device type
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
+    // Set raycaster precision for sprites
+    raycaster.params.Sprite = { threshold: 0.3 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -867,7 +917,7 @@ function updateObjectHoverEffects() {
 
 function updateObjectAnimation(object, time, animParams) {
     // Make object always face the camera
-    object.lookAt(camera.position);
+    // object.lookAt(camera.position);
 
     if (object.userData.hovered) {
         // Smooth transition to hover scale
@@ -875,6 +925,10 @@ function updateObjectAnimation(object, time, animParams) {
         
         // Smooth color transition to hover color
         object.material.color.lerp(animParams.hoverColor, animParams.lerpSpeed);
+        
+        // Subtle pulse effect when hovered
+        // const hoverPulse = 1 + Math.sin(time * animParams.pulseSpeed * 1.5) * (animParams.pulseAmount * 0.5);
+        // object.scale.multiplyScalar(hoverPulse);
     } else {
         // Base scale with subtle pulse
         const baseScale = animParams.normalScale.clone();
@@ -976,11 +1030,8 @@ function handleInteraction(event) {
         if (event.touches.length > 0) {
             x = event.touches[0].clientX;
             y = event.touches[0].clientY;
-            
-            console.log('touch start');
         } else {
             // If no touches are available (e.g., touchend)
-            console.log('no touches available. touch end');
             return;
         }
     } else {
@@ -998,89 +1049,87 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    // Adjust threshold based on device type
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
-    
-    // const intersects = raycaster.intersectObjects(hitAreasGroup.children);
     const intersects = raycaster.intersectObjects([
-        ...hotspotsGroup.children, 
+        ...hotspotsGroup.children,
         ...infospotsGroup.children
     ]);
-    
-    console.log(intersects)
 
     if (intersects.length > 0) {
-        const object = intersects[0].object;
-        if (object.userData.type === 'hotspot') 
-        {
-            loadPanorama(object.userData.target);
-        } 
-        else if (object.userData.type === 'infospot') 
-        {
-            const modal = document.getElementById('info-modal');
-            const images = Array.isArray(object.userData.image) 
-                ? object.userData.image 
-                : [object.userData.image];
-                
-            // Update modal content
-            modal.querySelector('#modal-title').textContent = object.userData.title;
-            modal.querySelector('#modal-description').textContent = object.userData.description;
-
-            // Handle image container
-            const container = modal.querySelector('#modal-image-container');
-            container.innerHTML = ''; // Clear previous content
-
-            if (images.length > 1) {
-                // Generate carousel HTML
-                container.innerHTML = `
-                    ${images.map((img, i) => `
-                    <img src="${img}" class="carousel-image ${i === 0 ? 'active' : ''}">
-                    `).join('')}
-                    <button class="carousel-prev">❮</button>
-                    <button class="carousel-next">❯</button>
-                    <div class="carousel-dots">
-                    ${images.map((_, i) => `
-                        <span class="dot ${i === 0 ? 'active' : ''}"></span>
-                    `).join('')}
-                    </div>
-                `;
-
-                // Carousel functionality
-                let currentIndex = 0;
-                const imagesEls = container.querySelectorAll('.carousel-image');
-                const dots = container.querySelectorAll('.dot');
-
-                const updateCarousel = (newIndex) => {
-                    imagesEls[currentIndex].classList.remove('active');
-                    dots[currentIndex].classList.remove('active');
-                    currentIndex = newIndex;
-                    imagesEls[currentIndex].classList.add('active');
-                    dots[currentIndex].classList.add('active');
-                };
-
-                // Navigation handlers
-                container.querySelector('.carousel-prev').addEventListener('click', () => 
-                    updateCarousel((currentIndex - 1 + images.length) % images.length));
-                
-                container.querySelector('.carousel-next').addEventListener('click', () => 
-                    updateCarousel((currentIndex + 1) % images.length));
-
-                dots.forEach((dot, index) => {
-                    dot.addEventListener('click', () => updateCarousel(index));
-                });
-            } 
-            else 
+        // Get target panorama ID from the clicked hotspot
+        const target = intersects[0].object.userData.target;
+        if (intersects.length > 0) {
+            const object = intersects[0].object;
+            if (object.userData.type === 'hotspot') 
             {
-                // Single image display
-                const img = document.createElement('img');
-                img.src = images[0];
-                img.className = 'carousel-image active';
-                container.appendChild(img);
+                loadPanorama(object.userData.target);
+            } 
+            else if (object.userData.type === 'infospot') 
+            {
+                const modal = document.getElementById('info-modal');
+                const images = Array.isArray(object.userData.image) 
+                    ? object.userData.image 
+                    : [object.userData.image];
+                    
+                // Update modal content
+                modal.querySelector('#modal-title').textContent = object.userData.title;
+                modal.querySelector('#modal-description').textContent = object.userData.description;
+
+                // Handle image container
+                const container = modal.querySelector('#modal-image-container');
+                container.innerHTML = ''; // Clear previous content
+
+                if (images.length > 1) {
+                    // Generate carousel HTML
+                    container.innerHTML = `
+                        ${images.map((img, i) => `
+                        <img src="${img}" class="carousel-image ${i === 0 ? 'active' : ''}">
+                        `).join('')}
+                        <button class="carousel-prev">❮</button>
+                        <button class="carousel-next">❯</button>
+                        <div class="carousel-dots">
+                        ${images.map((_, i) => `
+                            <span class="dot ${i === 0 ? 'active' : ''}"></span>
+                        `).join('')}
+                        </div>
+                    `;
+
+                    // Carousel functionality
+                    let currentIndex = 0;
+                    const imagesEls = container.querySelectorAll('.carousel-image');
+                    const dots = container.querySelectorAll('.dot');
+
+                    const updateCarousel = (newIndex) => {
+                        imagesEls[currentIndex].classList.remove('active');
+                        dots[currentIndex].classList.remove('active');
+                        currentIndex = newIndex;
+                        imagesEls[currentIndex].classList.add('active');
+                        dots[currentIndex].classList.add('active');
+                    };
+
+                    // Navigation handlers
+                    container.querySelector('.carousel-prev').addEventListener('click', () => 
+                        updateCarousel((currentIndex - 1 + images.length) % images.length));
+                    
+                    container.querySelector('.carousel-next').addEventListener('click', () => 
+                        updateCarousel((currentIndex + 1) % images.length));
+
+                    dots.forEach((dot, index) => {
+                        dot.addEventListener('click', () => updateCarousel(index));
+                    });
+                } 
+                else 
+                {
+                    // Single image display
+                    const img = document.createElement('img');
+                    img.src = images[0];
+                    img.className = 'carousel-image active';
+                    container.appendChild(img);
+                }
+
+                modal.style.display = 'flex';
+
+                return; // Prevent modal from closing
             }
-
-            modal.style.display = 'flex';
-
-            return; // Prevent modal from closing
         }
         // Provide visual feedback (optional)
         intersects[0].object.scale.multiplyScalar(1.2);
@@ -1092,23 +1141,10 @@ function handleInteraction(event) {
     }
 }
 
-const canvas = renderer.domElement;
+window.addEventListener('click', handleInteraction);
+window.addEventListener('touchend', handleInteraction);
 
-canvas.addEventListener('pointerdown', (event) => {
-    // Prevent default behavior to avoid any unwanted navigation (scroll/zoom)
-    event.preventDefault();
-    handleInteraction(event);
-}, { passive: false });
-
-canvas.addEventListener('pointerup', (event) => {
-    event.preventDefault();
-    handleInteraction(event);
-}, { passive: false, capture: true });
-
-canvas.addEventListener('touchstart', (event) => {
-    event.preventDefault();
-    handleInteraction(event);
-}, { passive: false });
+// Add click event listener for hotspots
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());
