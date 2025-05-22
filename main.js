@@ -1134,20 +1134,22 @@ function handleInteraction(event) {
 
             return; // Prevent modal from closing
         }
+        
+        // Provide visual feedback
+        intersects[0].object.scale.multiplyScalar(1.2);
+        setTimeout(() => {
+            if (intersects[0].object) {
+                intersects[0].object.scale.divideScalar(1.2);
+            }
+        }, 200);
+    } 
+    else {
+        console.log('Nothing clicked');
     }
-    // Provide visual feedback (optional)
-    intersects[0].object.scale.multiplyScalar(1.2);
-    setTimeout(() => {
-        if (intersects[0].object) {
-            intersects[0].object.scale.divideScalar(1.2);
-        }
-    }, 200);
 }
 
 window.addEventListener('click', handleInteraction);
 window.addEventListener('touchend', handleInteraction);
-
-// Add click event listener for hotspots
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());
