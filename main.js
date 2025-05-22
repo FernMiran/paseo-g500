@@ -1022,14 +1022,11 @@ function handleInteraction(event) {
     let x, y;
     
     if (event.type.startsWith('touch')) {
-        // Touch event (mobile)
-        if (event.touches.length > 0) {
-            x = event.touches[0].clientX;
-            y = event.touches[0].clientY;
-        } else {
-            // If no touches are available (e.g., touchend)
-            return;
-        }
+        // Use changedTouches for touchend
+        const touch = event.changedTouches?.[0] || event.touches?.[0];
+        if (!touch) return;
+        x = touch.clientX;
+        y = touch.clientY;
     } else {
         // Mouse event (desktop)
         x = event.clientX;
