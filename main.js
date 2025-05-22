@@ -3,6 +3,12 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js';
 
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+if (isTouchDevice) {
+    console.log('Running on a touch device');
+}
+
 // Scene setup
 const scene = new THREE.Scene();
 
@@ -62,7 +68,7 @@ scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
 
 // Define panoramas with hotspots
-const hostpotRadius = radius - 10;
+const hostpotRadius = 40;
 const panoramas = [
     {
         id: 1,
@@ -694,7 +700,8 @@ const infoSpriteMaterial = new THREE.SpriteMaterial({
     map: infoTexture,
     transparent: true,
     depthTest: false,
-    depthWrite: false
+    depthWrite: false,
+    sizeAttenuation: true // Maintains consistent size regardless of distance
 });
 
 const iconTexture = textureLoader.load('./location.svg', (texture) => {
@@ -725,15 +732,13 @@ const spriteMaterial = new THREE.SpriteMaterial({
     transparent: true,
     depthTest: false,  // Ensures sprite renders on top of other objects
     depthWrite: false, // Prevents depth buffer writes
-    // sizeAttenuation: false // Maintains consistent size regardless of distance
+    sizeAttenuation: true // Maintains consistent size regardless of distance
 });
 
 // Animation parameters for hotspots
 const hotspotAnimations = {
-    baseSize: 30,
-
-    normalScale: new THREE.Vector2(40, 40),
-    hoverScale: new THREE.Vector2(90, 90),
+    normalScale: new THREE.Vector3(4, 4, 1),
+    hoverScale: new THREE.Vector3(5, 5, 1),
 
     pulseSpeed: 0.3,
     pulseAmount: 0.05,
@@ -750,12 +755,12 @@ const hotspotAnimations = {
 // Function to compute 3D position from UV coordinates for a cylinder
 function computePosition(u, v) {
     const phi = (1 - u) * 2 * Math.PI; // Horizontal angle (0 to 2π)
-    const height = radius * 1.2; // Match cylinder height
+    const height = hostpotRadius * 1.2; // Match cylinder height
     
     // For cylindrical mapping
-    const x = radius * Math.sin(phi);
+    const x = hostpotRadius * Math.sin(phi);
     const y = height * (v - 0.5); // Map v from 0-1 to -height/2 to height/2
-    const z = radius * Math.cos(phi);
+    const z = hostpotRadius * Math.cos(phi);
     
     return new THREE.Vector3(x, y, z);
 }
@@ -877,7 +882,7 @@ function updateObjectHoverEffects() {
     raycaster.setFromCamera(mouse, camera);
     
     // Set raycaster precision for sprites
-    raycaster.params.Sprite = { threshold: 0.3 };
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 700.0 : 1.5 };
     
     // Check for intersections
     const intersects = raycaster.intersectObjects([
@@ -1049,96 +1054,94 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
+
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
         ...infospotsGroup.children
     ]);
 
     if (intersects.length > 0) {
-        // Get target panorama ID from the clicked hotspot
-        const target = intersects[0].object.userData.target;
-        if (intersects.length > 0) {
-            const object = intersects[0].object;
-            if (object.userData.type === 'hotspot') 
-            {
-                loadPanorama(object.userData.target);
+        const object = intersects[0].object;
+        if (object.userData.type === 'hotspot') 
+        {
+            loadPanorama(object.userData.target);
+        } 
+        else if (object.userData.type === 'infospot') 
+        {
+            const modal = document.getElementById('info-modal');
+            const images = Array.isArray(object.userData.image) 
+                ? object.userData.image 
+                : [object.userData.image];
+                
+            // Update modal content
+            modal.querySelector('#modal-title').textContent = object.userData.title;
+            modal.querySelector('#modal-description').textContent = object.userData.description;
+
+            // Handle image container
+            const container = modal.querySelector('#modal-image-container');
+            container.innerHTML = ''; // Clear previous content
+
+            if (images.length > 1) {
+                // Generate carousel HTML
+                container.innerHTML = `
+                    ${images.map((img, i) => `
+                    <img src="${img}" class="carousel-image ${i === 0 ? 'active' : ''}">
+                    `).join('')}
+                    <button class="carousel-prev">❮</button>
+                    <button class="carousel-next">❯</button>
+                    <div class="carousel-dots">
+                    ${images.map((_, i) => `
+                        <span class="dot ${i === 0 ? 'active' : ''}"></span>
+                    `).join('')}
+                    </div>
+                `;
+
+                // Carousel functionality
+                let currentIndex = 0;
+                const imagesEls = container.querySelectorAll('.carousel-image');
+                const dots = container.querySelectorAll('.dot');
+
+                const updateCarousel = (newIndex) => {
+                    imagesEls[currentIndex].classList.remove('active');
+                    dots[currentIndex].classList.remove('active');
+                    currentIndex = newIndex;
+                    imagesEls[currentIndex].classList.add('active');
+                    dots[currentIndex].classList.add('active');
+                };
+
+                // Navigation handlers
+                container.querySelector('.carousel-prev').addEventListener('click', () => 
+                    updateCarousel((currentIndex - 1 + images.length) % images.length));
+                
+                container.querySelector('.carousel-next').addEventListener('click', () => 
+                    updateCarousel((currentIndex + 1) % images.length));
+
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => updateCarousel(index));
+                });
             } 
-            else if (object.userData.type === 'infospot') 
+            else 
             {
-                const modal = document.getElementById('info-modal');
-                const images = Array.isArray(object.userData.image) 
-                    ? object.userData.image 
-                    : [object.userData.image];
-                    
-                // Update modal content
-                modal.querySelector('#modal-title').textContent = object.userData.title;
-                modal.querySelector('#modal-description').textContent = object.userData.description;
-
-                // Handle image container
-                const container = modal.querySelector('#modal-image-container');
-                container.innerHTML = ''; // Clear previous content
-
-                if (images.length > 1) {
-                    // Generate carousel HTML
-                    container.innerHTML = `
-                        ${images.map((img, i) => `
-                        <img src="${img}" class="carousel-image ${i === 0 ? 'active' : ''}">
-                        `).join('')}
-                        <button class="carousel-prev">❮</button>
-                        <button class="carousel-next">❯</button>
-                        <div class="carousel-dots">
-                        ${images.map((_, i) => `
-                            <span class="dot ${i === 0 ? 'active' : ''}"></span>
-                        `).join('')}
-                        </div>
-                    `;
-
-                    // Carousel functionality
-                    let currentIndex = 0;
-                    const imagesEls = container.querySelectorAll('.carousel-image');
-                    const dots = container.querySelectorAll('.dot');
-
-                    const updateCarousel = (newIndex) => {
-                        imagesEls[currentIndex].classList.remove('active');
-                        dots[currentIndex].classList.remove('active');
-                        currentIndex = newIndex;
-                        imagesEls[currentIndex].classList.add('active');
-                        dots[currentIndex].classList.add('active');
-                    };
-
-                    // Navigation handlers
-                    container.querySelector('.carousel-prev').addEventListener('click', () => 
-                        updateCarousel((currentIndex - 1 + images.length) % images.length));
-                    
-                    container.querySelector('.carousel-next').addEventListener('click', () => 
-                        updateCarousel((currentIndex + 1) % images.length));
-
-                    dots.forEach((dot, index) => {
-                        dot.addEventListener('click', () => updateCarousel(index));
-                    });
-                } 
-                else 
-                {
-                    // Single image display
-                    const img = document.createElement('img');
-                    img.src = images[0];
-                    img.className = 'carousel-image active';
-                    container.appendChild(img);
-                }
-
-                modal.style.display = 'flex';
-
-                return; // Prevent modal from closing
+                // Single image display
+                const img = document.createElement('img');
+                img.src = images[0];
+                img.className = 'carousel-image active';
+                container.appendChild(img);
             }
+
+            modal.style.display = 'flex';
+
+            return; // Prevent modal from closing
         }
-        // Provide visual feedback (optional)
-        intersects[0].object.scale.multiplyScalar(1.2);
-        setTimeout(() => {
-            if (intersects[0].object) {
-                intersects[0].object.scale.divideScalar(1.2);
-            }
-        }, 200);
     }
+    // Provide visual feedback (optional)
+    intersects[0].object.scale.multiplyScalar(1.2);
+    setTimeout(() => {
+        if (intersects[0].object) {
+            intersects[0].object.scale.divideScalar(1.2);
+        }
+    }, 200);
 }
 
 window.addEventListener('click', handleInteraction);
