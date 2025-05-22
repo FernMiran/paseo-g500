@@ -68,7 +68,6 @@ scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
 
 // Define panoramas with hotspots
-const hostpotRadius = 40;
 const panoramas = [
     {
         id: 1,
@@ -696,6 +695,7 @@ const textureLoader = new THREE.TextureLoader();
 
 // Load info icon texture
 const infoTexture = textureLoader.load('./info.svg');
+
 const infoSpriteMaterial = new THREE.SpriteMaterial({
     map: infoTexture,
     transparent: true,
@@ -737,8 +737,8 @@ const spriteMaterial = new THREE.SpriteMaterial({
 
 // Animation parameters for hotspots
 const hotspotAnimations = {
-    normalScale: new THREE.Vector3(4, 4, 1),
-    hoverScale: new THREE.Vector3(5, 5, 1),
+    normalScale: new THREE.Vector3(5, 5, 1),
+    hoverScale: new THREE.Vector3(6, 6, 1),
 
     pulseSpeed: 0.3,
     pulseAmount: 0.05,
@@ -752,15 +752,16 @@ const hotspotAnimations = {
     lerpSpeed: 0.05
 };
 
+const hotspotRadius = 35;
 // Function to compute 3D position from UV coordinates for a cylinder
 function computePosition(u, v) {
     const phi = (1 - u) * 2 * Math.PI; // Horizontal angle (0 to 2π)
-    const height = hostpotRadius * 1.2; // Match cylinder height
+    const height = hotspotRadius * 1.2; // Match cylinder height
     
     // For cylindrical mapping
-    const x = hostpotRadius * Math.sin(phi);
+    const x = hotspotRadius * Math.sin(phi);
     const y = height * (v - 0.5); // Map v from 0-1 to -height/2 to height/2
-    const z = hostpotRadius * Math.cos(phi);
+    const z = hotspotRadius * Math.cos(phi);
     
     return new THREE.Vector3(x, y, z);
 }
@@ -769,7 +770,7 @@ function createInfospots(infospots) {
     infospotsGroup.remove(...infospotsGroup.children);
     
     infospots.forEach(infospot => {
-        const position = computePosition(infospot.position.u, infospot.position.v, hostpotRadius);
+        const position = computePosition(infospot.position.u, infospot.position.v);
         const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
         sprite.position.copy(position);
 
@@ -795,7 +796,7 @@ function createHotspots(hotspots) {
     hotspotsGroup.remove(...hotspotsGroup.children);
     
     hotspots.forEach(hotspot => {
-        const position = computePosition(hotspot.position.u, hotspot.position.v, hostpotRadius);
+        const position = computePosition(hotspot.position.u, hotspot.position.v);
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
 
@@ -955,7 +956,8 @@ controls.minAzimuthAngle = THREE.MathUtils.degToRad(-130);
 controls.maxAzimuthAngle = THREE.MathUtils.degToRad(130);
 
 // Zoom settings
-controls.enableZoom = true;
+controls.enableZoom = false;
+// controls.enableZoom = true;
 controls.minDistance = 1;    // Prevent zooming too close to the center
 controls.maxDistance = 50;   // Prevent zooming too far out, keeping the view immersive
 
