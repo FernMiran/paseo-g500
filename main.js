@@ -774,9 +774,6 @@ function createInfospots(infospots) {
         sprite.position.copy(position);
 
         sprite.scale.copy(hotspotAnimations.normalScale);
-        // sprite.scale.set(50, 50, 1);
-        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
-        // Add visual feedback for debugging
         sprite.material.color = hotspotAnimations.normalColor.clone();
         
         sprite.userData = {
@@ -803,9 +800,6 @@ function createHotspots(hotspots) {
         sprite.position.copy(position);
 
         sprite.scale.copy(hotspotAnimations.normalScale);
-        // sprite.scale.set(50, 50, 1);
-        // sprite.material.color = new THREE.Color(0x00ff00); // Green tint
-        // Add visual feedback for debugging
         sprite.material.color = hotspotAnimations.normalColor.clone();
         
         sprite.userData = { 
@@ -930,10 +924,6 @@ function updateObjectAnimation(object, time, animParams) {
         
         // Smooth color transition to hover color
         object.material.color.lerp(animParams.hoverColor, animParams.lerpSpeed);
-        
-        // Subtle pulse effect when hovered
-        // const hoverPulse = 1 + Math.sin(time * animParams.pulseSpeed * 1.5) * (animParams.pulseAmount * 0.5);
-        // object.scale.multiplyScalar(hoverPulse);
     } else {
         // Base scale with subtle pulse
         const baseScale = animParams.normalScale.clone();
@@ -974,6 +964,8 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.rotateSpeed = 0.5;
 
+controls.touchAction = 'none';
+
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
@@ -993,8 +985,7 @@ function animate() {
 
     renderer.render(scene, camera);
 }
-// Create a clock for animation timing
-const clock = new THREE.Clock();
+
 animate();
 
 // when the user *starts* interacting…
