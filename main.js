@@ -1054,7 +1054,7 @@ function handleInteraction(event) {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    raycaster.params.Sprite = { threshold: isTouchDevice ? 100.0 : 1.5 };
+    raycaster.params.Sprite = { threshold: isTouchDevice ? 700.0 : 1.5 };
 
     const intersects = raycaster.intersectObjects([
         ...hotspotsGroup.children,
@@ -1062,6 +1062,7 @@ function handleInteraction(event) {
     ]);
 
     if (intersects.length > 0) {
+        console.log('Clicked on:', intersects[0].object);
         const object = intersects[0].object;
         if (object.userData.type === 'hotspot') 
         {
