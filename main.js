@@ -1,5 +1,3 @@
-/* Panoramic view version 0.1.1 */
-
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js';
 
@@ -25,11 +23,12 @@ camera.position.set(0, 0, 0.1); // Small offset to avoid control issues
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio); // Enhance sharpness on high-DPI displays
-renderer.outputColorSpace = THREE.SRGBColorSpace; // <<< Add this line
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
 document.body.appendChild(renderer.domElement);
 
-// Create a cylindrical panorama instead of a sphere
-// This will give a more flat view for wide panoramic images
+// Create a cylindrical panorama
 const radius = 500;
 const widthSegments = 60;
 const heightSegments = 40;
@@ -71,6 +70,7 @@ scene.add(infospotsGroup);
 const panoramas = [
     {
         id: 1,
+        name: 'Inicio',
         image: './mapa/1.jpg',
         music: './audio/1.m4a',
         hotspots: [
@@ -90,14 +90,16 @@ const panoramas = [
         ]
     },
     {
-        id: 2,
+        id: 2        ,
+        name: 'Inicio',
         image: './mapa/2.jpg',
         music: './audio/7.m4a', // './audio/14.m4a',
         hotspots: [
             { position: { u: 0.17, v: 0.4 }, target: 22 },
             { position: { u: 0.35, v: 0.4 }, target: 3 },
             { position: { u: 0.7, v: 0.4 }, target: 21 },
-            { position: { u: 0.75, v: 0.4 }, target: 20 }
+            { position: { u: 0.77, v: 0.45 }, target: 20 }
+            { position: { u: 0.9, v: 0.45 }, target: 1 }
 
         ],
         infospots: [
@@ -110,7 +112,8 @@ const panoramas = [
         ]
     },    
 	{
-        id: 3,
+        id: 3        ,
+        name: 'Inicio',
         image: './mapa/3.jpg',
         music: './audio/3.m4a',
         hotspots: [
@@ -123,20 +126,21 @@ const panoramas = [
         ]
     },
     {
-        id: 4,
+        id: 4        ,
+        name: 'Inicio',
         image: './mapa/4.jpg',
         music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.08, v: 0.3 }, target: 3 },
-            { position: { u: 0.1, v: 0.2 }, target: 22 },
             { position: { u: 0.4, v: 0.2 }, target: 5 },
-            { position: { u: 0.6, v: 0.4 }, target: 8 }
+            { position: { u: 0.63, v: 0.4 }, target: 8 }
         ],
         infospots: [
         ]
     },
     {
-        id: 5,
+        id: 5        ,
+        name: 'Inicio',
         image: './mapa/5.jpg',
         music: './audio/2.m4a',
         hotspots: [
@@ -177,7 +181,8 @@ const panoramas = [
         ]
     },
     {
-        id: 6,
+        id: 6        ,
+        name: 'Inicio',
         image: './mapa/6.jpg',
         music: './audio/3a.m4a',
         hotspots: [
@@ -194,7 +199,8 @@ const panoramas = [
         ]
     },
     {
-        id: 7,
+        id: 7        ,
+        name: 'Inicio',
         image: './mapa/7.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -211,19 +217,21 @@ const panoramas = [
         ]
     },
     {
-        id: 8,
+        id: 8        ,
+        name: 'Inicio',
         image: './mapa/8.jpg',
         music: './audio0.mp3',
         hotspots: [
             { position: { u: 0.1, v: 0.3 }, target: 7 },
-            { position: { u: 0.58, v: 0.2 }, target: 9 },
+            { position: { u: 0.58, v: 0.4 }, target: 9 },
             { position: { u: 0.87, v: 0.2 }, target: 4 },
         ],
         infospots: [
         ]
     },
     {
-        id: 9,
+        id: 9        ,
+        name: 'Inicio',
         image: './mapa/9.jpg',
         music: './audio/4.m4a',
         hotspots: [
@@ -246,7 +254,8 @@ const panoramas = [
         ]
     },
     {
-        id: 10,
+        id: 10        ,
+        name: 'Inicio',
         image: './mapa/10.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -263,20 +272,23 @@ const panoramas = [
         ]
     },
     {
-        id: 11,
+        id: 11        ,
+        name: 'Inicio',
         image: './mapa/11.jpg',
         music: './audio0.mp3',
         hotspots: [
+            // { position: { u: 0.07, v: 0.3 }, target: 112 },
             { position: { u: 0.1, v: 0.3 }, target: 10 },
             { position: { u: 0.4, v: 0.6 }, target: 12 },
             { position: { u: 0.7, v: 0.3 }, target: 13 },
-            { position: { u: 0.9, v: 0.3 }, target: 112 }
+            { position: { u: 0.8, v: 0.3 }, target: 112 }
         ],
         infospots: [
         ]
     },
     {
-        id: 12,
+        id: 12        ,
+        name: 'Inicio',
         image: './mapa/12.jpg',
         music: './audio/5.m4a',
         hotspots: [
@@ -300,7 +312,8 @@ const panoramas = [
         ]
     },
     {
-        id: 13,
+        id: 13        ,
+        name: 'Inicio',
         image: './mapa/13.jpg',
         music: './audio/10.m4a',
         hotspots: [
@@ -317,7 +330,8 @@ const panoramas = [
         ]
     },
     {
-        id: 14,
+        id: 14        ,
+        name: 'Inicio',
         image: './mapa/14.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -328,7 +342,8 @@ const panoramas = [
         ]
     },
     {
-        id: 15,
+        id: 15        ,
+        name: 'Inicio',
         image: './mapa/15.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -339,7 +354,8 @@ const panoramas = [
         ]
     },
     {
-        id: 16,
+        id: 16        ,
+        name: 'Inicio',
         image: './mapa/16.jpg',
         music: './audio/11.m4a',
         hotspots: [
@@ -357,7 +373,8 @@ const panoramas = [
         ]
     },
     {
-        id: 17,
+        id: 17        ,
+        name: 'Inicio',
         image: './mapa/17.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -368,7 +385,8 @@ const panoramas = [
         ]
     },
     {
-        id: 18,
+        id: 18        ,
+        name: 'Inicio',
         image: './mapa/18.jpg',
         music: './audio/16.m4a', // Change to interior only (When pocito scene is added)
         hotspots: [
@@ -386,7 +404,8 @@ const panoramas = [
         ]
     },
     {
-        id: 19,
+        id: 19        ,
+        name: 'Inicio',
         image: './mapa/19.jpg',
         music: './audio/20.m4a',
         hotspots: [
@@ -404,7 +423,8 @@ const panoramas = [
         ]
     },
     {
-        id: 20,
+        id: 20        ,
+        name: 'Inicio',
         image: './mapa/20.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -420,7 +440,8 @@ const panoramas = [
         ]
     },
     {
-        id: 21,
+        id: 21        ,
+        name: 'Inicio',
         image: './mapa/21.jpg',
         music: './audio/18.m4a',
         hotspots: [
@@ -467,7 +488,8 @@ const panoramas = [
         ]
     },
     {
-        id: 22,
+        id: 22        ,
+        name: 'Inicio',
         image: './mapa/22.jpg',
         music: './audio/6.m4a',
         hotspots: [
@@ -509,7 +531,8 @@ const panoramas = [
         ]
     },
     {
-        id: 23,
+        id: 23        ,
+        name: 'Inicio',
         image: './mapa/23.jpg',
         music: './audio/25.m4a',
         hotspots: [
@@ -525,7 +548,8 @@ const panoramas = [
         ]
     },
     {
-        id: 24,
+        id: 24        ,
+        name: 'Inicio',
         image: './mapa/24.jpg',
         music: './audio/26.m4a',
         hotspots: [
@@ -542,7 +566,8 @@ const panoramas = [
         ]
     },
     {
-        id: 112,
+        id: 112        ,
+        name: 'Inicio',
         image: './mapa/112.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -553,7 +578,8 @@ const panoramas = [
         ]
     },
     {
-        id: 121,
+        id: 121        ,
+        name: 'Inicio',
         image: './mapa/121.jpg',
         music: './audio/15.m4a',
         hotspots: [
@@ -587,7 +613,8 @@ const panoramas = [
         ]
     },
     {
-        id: 162,
+        id: 162        ,
+        name: 'Inicio',
         image: './mapa/162.jpg',
         music: './audio/12.m4a',
         hotspots: [
@@ -604,7 +631,8 @@ const panoramas = [
         ]
     },
     {
-        id: 182,
+        id: 182        ,
+        name: 'Inicio',
         image: './mapa/182.jpg',
         music: './audio/12.m4a',
         hotspots: [
@@ -644,7 +672,8 @@ const panoramas = [
         ]
     }, 
     {
-        id: 192,
+        id: 192        ,
+        name: 'Inicio',
         image: './mapa/192.jpg',
         music: './audio/19.m4a',
         hotspots: [
@@ -917,7 +946,7 @@ function updateObjectHoverEffects() {
 
 function updateObjectAnimation(object, time, animParams) {
     // Make object always face the camera
-    // object.lookAt(camera.position);
+    object.lookAt(camera.position);
 
     if (object.userData.hovered) {
         // Smooth transition to hover scale
@@ -945,7 +974,6 @@ function updateObjectAnimation(object, time, animParams) {
 // Set up OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
 const overlay = document.getElementById('overlay-label');
-const logo = document.getElementById('logo');
 
 // Limit vertical rotation to avoid seeing the top/bottom edges
 controls.minPolarAngle = Math.PI * 0.50; // Restrict looking too far up
@@ -1140,7 +1168,13 @@ function handleInteraction(event) {
 }
 
 window.addEventListener('click', handleInteraction);
-window.addEventListener('touchend', handleInteraction);
+window.addEventListener('touchend', () => { 
+    handleInteraction();
+    console.log('Touch ended');
+});
+window.addEventListener('touchstart', () => { 
+    console.log('Touch started') 
+});
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());

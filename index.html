@@ -62,7 +62,13 @@
     }
 
     /* Menu panel */
-    #menu-links {
+	.menu-container {
+	  width: 500px;
+	  height: 500px;
+	  background: rgba(0, 0, 0, 0.8);
+	  box-shadow: -2px 0 5px rgba(0, 0, 0, 1);
+	}
+	#menu-links {
       list-style: none;
       padding: 0;
       background: rgba(0, 0, 0, 0.95);
@@ -270,7 +276,9 @@
 	}
 
 
-	#play-pause-button {
+
+
+	.playback-button {
 		width: 60px;
 		height: 60px;
 		font-size: 0px;
@@ -286,7 +294,7 @@
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 		padding: 0;
 	}
-	#play-pause-button svg {
+	.playback-button svg {
 		width: 24px;
 		height: 24px;
 		fill: black;
@@ -382,7 +390,7 @@
       }
     </script>
   </head>
-  <body>0.1.30
+  <body>0.1.31
     <!-- Modal -->
     <div id="info-modal" style="display: none;">
       <div class="modal-content">
@@ -400,26 +408,25 @@
 	</a>
 
 	<!-- Hamburger menu -->
-	<div id="hamburger-menu">
-		<button id="hamburger-toggle" aria-label="Toggle menu">
-		<span></span>
-		<span></span>
-		<span></span>
-		</button>
-		<ul id="menu-links">
-		<li><a href="https://guadalupe500mexico.com/">Inicio</a></li>
-		<li><a href="https://guadalupe500mexico.com/quien-soy.php">¿Quién soy?</a></li>
-		<li><a href="https://guadalupe500mexico.com/productos.php">Productos</a></li>
-		<li><a href="https://guadalupe500mexico.com/historia-basilica-guadalupe.php">Historia</a></li>
-		<li><a href="https://guadalupe500mexico.com/mapa-de-ruta.php">Mapa de ruta</a></li>
-		<li><a href="#contact">Servicios</a></li>
-		<!-- <li><a href="https://guadalupe500mexico.com/peregrinaciones.php">Peregrinaciones</a></li>
-		<li><a href="https://guadalupe500mexico.com/conferencias.php">Conferencias</a></li>
-		<li><a href="https://guadalupe500mexico.com/entrevistas.php">Entrevistas</a></li> -->
-		<li><a href="https://guadalupe500mexico.com/contacto.php">Contacto</a></li>
-		</ul>
+	<div id="menu-container">
+		<div id="hamburger-menu">
+			<button id="hamburger-toggle" aria-label="Toggle menu">
+			<span></span>
+			<span></span>
+			<span></span>
+			</button>
+			<ul id="menu-links">
+			<li><a href="/1">1.- Inicio</a></li>
+			<li><a href="/2">2.- Plaza Lateral</a></li>
+			<li><a href="/3">3.- Plaza Bautisterio</a></li>
+			<li><a href="/4">4.- Jardín Cristo Rey</a></li>
+			<li><a href="/5">5.- Velero y Barco</a></li>
+			<li><a href="/6">6.- Capilla Pocito</a></li>
+			<li><a href="/7">7.- Parroquia de Indios</a></li>
+			</ul>
+		</div>
 	</div>
-	
+
     <!-- Overlay label -->
     <div id="overlay-label">
 		<h1>Paseo Virtual</h1>
@@ -434,10 +441,16 @@
 	<div id="player-container">
 		<!-- Playback controls -->
 		<div id="playback-controls">
-			<button id="play-pause-button" aria-label="Play/Pause"></button>
+			<button id="volume-button" aria-label="Volume" class="playback-button">
+				<img width="20" height="20" src="./arrow-back.svg"></svg>
+			</button>
+			<button id="play-pause-button" aria-label="Play/Pause" class="playback-button"></button>
 			<!-- <button id="volume-button" aria-label="Volume" class="icon-button">
 				<img width="20" height="20" src="./volume.svg"></svg>
 			</button> -->
+			<button id="volume-button" aria-label="Volume" class="playback-button">
+				<img width="20" height="20" src="./arrow-forward.svg"></svg>
+			</button>
 			<div id="volume-popover">
 				<input id="volume-slider" type="range" min="0" max="1" value="0.5" step="0.01">
 				<span id="volume-label">50%</span>
