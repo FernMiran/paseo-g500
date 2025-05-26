@@ -98,7 +98,7 @@ const panoramas = [
             { position: { u: 0.17, v: 0.4 }, target: 22 },
             { position: { u: 0.35, v: 0.4 }, target: 3 },
             { position: { u: 0.7, v: 0.4 }, target: 21 },
-            { position: { u: 0.77, v: 0.45 }, target: 20 }
+            { position: { u: 0.77, v: 0.45 }, target: 20 },
             { position: { u: 0.9, v: 0.45 }, target: 1 }
 
         ],
