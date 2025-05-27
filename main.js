@@ -636,7 +636,8 @@ const panoramas = [
         image: './mapa/121.jpg',
         music: './audio/15.m4a',
         hotspots: [
-            { position: { u: 0.6, v: 0.3 }, target: 2 }
+            { position: { u: 0.9, v: 0.3 }, target: 12 },
+            { position: { u: 0.1, v: 0.3 }, target: 12 }
         ],
         infospots: [
             {
@@ -647,21 +648,21 @@ const panoramas = [
                 description:  ''
             },
             {
-                position: { u: 0.47, v: 0.3 },
-                image: [ './mapa/121/121c.jpg', './mapa/121/121g.jpg' ],
+                position: { u: 0.57, v: 0.4 },
+                image: [  './mapa/121/121g.jpg', './mapa/121/121c.jpg' ],
                 video: '',
                 title: '',
                 description:  ''
             },
             {
-                position: { u: 0.47, v: 0.7 },
+                position: { u: 0.57, v: 0.8 },
                 image: [ './mapa/121/121r.jpg' ],
                 video: '',
                 title: '',
                 description:  ''
             },
             {
-                position: { u: 0.9, v: 0.3 },
+                position: { u: 0.85, v: 0.4 },
                 image: [ './mapa/121/121h.jpg', './mapa/121/121d.jpg', './mapa/121/121c.jpg' ],
                 video: '',
                 title: '',
@@ -953,7 +954,7 @@ function createHotspots(hotspots) {
         const pano = panoramas.find(p => p.id === hotspot.target);
         const div = document.createElement('div');
         div.className = 'hotspot-label';
-        div.textContent = pano ? `${pano.id} ${pano.name}` : `Scene ${hotspot.target}`;
+        div.textContent = pano ? `(${pano.id})\n${pano.name}` : `Scene ${hotspot.target}`;
         // you can style .hotspot-label in CSS (font, color, background…)
 
         console.log('Creating label for hotspot:', pano.title, 'at position:', position);
@@ -1081,9 +1082,6 @@ function updateObjectHoverEffects() {
     // Update hotspots animations
     hotspotsGroup.children.forEach(sprite => {
         updateObjectAnimation(sprite, time, panoramaButtonProperties);
-        if (sprite.userData.labelElement) {
-            updateLabelPosition(sprite, sprite.userData.labelElement);
-        }
     });
     
     // Update infospots animations
@@ -1132,8 +1130,7 @@ controls.minAzimuthAngle = THREE.MathUtils.degToRad(-130);
 controls.maxAzimuthAngle = THREE.MathUtils.degToRad(130);
 
 // Zoom settings
-controls.enableZoom = false;
-// controls.enableZoom = true;
+controls.enableZoom = true;
 controls.minDistance = 1;    // Prevent zooming too close to the center
 controls.maxDistance = 50;   // Prevent zooming too far out, keeping the view immersive
 
@@ -1355,28 +1352,6 @@ navigationBack.addEventListener('click', () => {
     prevPanorama();
     console.log('Previous panorama');
 });
-
-// Function to create label element
-function createLabelElement(text, id) {
-    const label = document.createElement('div');
-    label.className = 'hotspot-label';
-    label.textContent = text;
-    label.id = `label-${id}`;
-    document.body.appendChild(label);
-    return label;
-}
-
-// Function to update label position
-function updateLabelPosition(sprite, label) {
-    const vector = sprite.position.clone();
-    vector.project(camera);
-    
-    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
-    
-    label.style.left = `${x}px`;
-    label.style.top = `${y - 60}px`; // Position above the hotspot
-}
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());
