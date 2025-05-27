@@ -1,5 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js';
+
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/renderers/CSS2DRenderer.js';
 
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
@@ -27,6 +29,16 @@ renderer.setPixelRatio(window.devicePixelRatio); // Enhance sharpness on high-DP
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 document.body.appendChild(renderer.domElement);
+
+// … your WebGLRenderer setup …
+
+// CSS2D renderer for labels
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top      = '0';
+labelRenderer.domElement.style.pointerEvents = 'none'; // let clicks pass through
+document.body.appendChild(labelRenderer.domElement);
 
 // Create a cylindrical panorama
 const radius = 500;
@@ -62,19 +74,21 @@ scene.add(cylinder);
 // Create a group for hotspots and infospots
 const hotspotsGroup = new THREE.Group();
 const infospotsGroup = new THREE.Group();
+const labelsGroup = new THREE.Group();
 
 scene.add(hotspotsGroup);
 scene.add(infospotsGroup);
+scene.add(labelsGroup);
 
 // Define panoramas with hotspots
 const panoramas = [
     {
         id: 1,
-        name: 'Inicio',
+        name: 'Plaza Mariana',
         image: './mapa/1.jpg',
         music: './audio/1.m4a',
         hotspots: [
-            { position: { u: 0.4, v: 0.35 }, target: 22 },
+            { position: { u: 0.4, v: 0.35 }, target: 22, label: 'Inicio' },
             { position: { u: 0.5, v: 0.35 }, target: 2 },
             { position: { u: 0.56, v: 0.35 }, target: 21 },
             { position: { u: 0.73, v: 0.35 }, target: 20 },
@@ -84,14 +98,22 @@ const panoramas = [
             { 
                 position: { u: 0.3, v: 0.2 }, 
                 image: [ './mapa/1/1a.jpg' ],
+                video: '',
                 title: 'Bienvenido al paseo virtual de la Básilica de Guadalupe', 
                 description: 'Para navegar por el recorrido, utiliza el mouse o el touchpad. Haz clic en los puntos de interés para obtener más información.'
+            },
+            { 
+                position: { u: 0.1, v: 0.7 }, 
+                image: '',
+                video: './video/1.mp4',
+                title: '', 
+                description: ''
             }
         ]
     },
     {
         id: 2        ,
-        name: 'Inicio',
+        name: 'Papa Juan Pablo II',
         image: './mapa/2.jpg',
         music: './audio/7.m4a', // './audio/14.m4a',
         hotspots: [
@@ -106,6 +128,7 @@ const panoramas = [
             { 
                 position: { u: 0.45, v: 0.4 }, 
                 image: [ './mapa/2/2a.jpg', './mapa/2/2b.jpg'],
+                video: '',
                 title: '', 
                 description: ''
             }
@@ -113,7 +136,7 @@ const panoramas = [
     },    
 	{
         id: 3        ,
-        name: 'Inicio',
+        name: 'Atrio Bautisterio',
         image: './mapa/3.jpg',
         music: './audio/3.m4a',
         hotspots: [
@@ -127,7 +150,7 @@ const panoramas = [
     },
     {
         id: 4        ,
-        name: 'Inicio',
+        name: 'Lateral Bautisterio',
         image: './mapa/4.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -140,7 +163,7 @@ const panoramas = [
     },
     {
         id: 5        ,
-        name: 'Inicio',
+        name: 'Jardín Cristo Rey',
         image: './mapa/5.jpg',
         music: './audio/2.m4a',
         hotspots: [
@@ -151,38 +174,43 @@ const panoramas = [
             {
                 position: { u: 0.3, v: 0.3 }, 
                 image: './mapa/5/5a.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.34, v: 0.35 }, 
                 image: './mapa/5/5b.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.36, v: 0.4 }, 
                 image: [ './mapa/5/5c.jpg', './mapa/5/5d.jpg', './mapa/5/5e.jpg', './mapa/5/5f.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.4, v: 0.4 }, 
                 image: [ './mapa/5/5g.jpg', './mapa/5/5h.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.42, v: 0.35 }, 
                 image: './mapa/5/5i.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 6        ,
-        name: 'Inicio',
+        name: 'Estatua Cristo Rey',
         image: './mapa/6.jpg',
         music: './audio/3a.m4a',
         hotspots: [
@@ -193,14 +221,15 @@ const panoramas = [
             {
                 position: { u: 0.6, v: 0.3 }, 
                 image: [ './mapa/6/6a.jpg', './mapa/6/6b.jpg', './mapa/6/6c.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 7        ,
-        name: 'Inicio',
+        name: 'Pasillo',
         image: './mapa/7.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -211,14 +240,15 @@ const panoramas = [
             {
                 position: { u: 0.33, v: 0.7 }, 
                 image: [ './mapa/6/6a.jpg', './mapa/6/6b.jpg', './mapa/6/6c.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 8        ,
-        name: 'Inicio',
+        name: 'Escaleras',
         image: './mapa/8.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -231,7 +261,7 @@ const panoramas = [
     },
     {
         id: 9        ,
-        name: 'Inicio',
+        name: 'Fuente Tepeyac',
         image: './mapa/9.jpg',
         music: './audio/4.m4a',
         hotspots: [
@@ -242,22 +272,24 @@ const panoramas = [
             {
                 position: { u: 0.27, v: 0.4 },
                 image: [ './mapa/9/9a.jpg', './mapa/9/9b.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.9, v: 0.3 },
                 image: './mapa/9/9c.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 10        ,
-        name: 'Inicio',
+        name: 'Panteón del Tepeyac',
         image: './mapa/10.jpg',
-        music: './audio0.mp3',
+        music: '',
         hotspots: [
             { position: { u: 0.47, v: 0.3 }, target: 9 },
             { position: { u: 0.8, v: 0.3 }, target: 11 }
@@ -266,14 +298,15 @@ const panoramas = [
             {
                 position: { u: 0.61, v: 0.6 },
                 image: [ './mapa/10/10a.jpg', './mapa/10/10b.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 11        ,
-        name: 'Inicio',
+        name: 'Escaleras Tepeyac',
         image: './mapa/11.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -288,7 +321,7 @@ const panoramas = [
     },
     {
         id: 12        ,
-        name: 'Inicio',
+        name: 'Atrio Tepeyac',
         image: './mapa/12.jpg',
         music: './audio/5.m4a',
         hotspots: [
@@ -300,20 +333,22 @@ const panoramas = [
             {
                 position: { u: 0.1, v: 0.6 },
                 image: [ './mapa/12/12a.jpg', './mapa/12/12b.jpg', './mapa/12/12c.jpg', './mapa/12/12d.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.8, v: 0.4 },
                 image: [ './mapa/12/12e.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 13        ,
-        name: 'Inicio',
+        name: 'Barco y Velero',
         image: './mapa/13.jpg',
         music: './audio/10.m4a',
         hotspots: [
@@ -324,14 +359,15 @@ const panoramas = [
             {
                 position: { u: 0.39, v: 0.3 },
                 image: [ './mapa/13/13a.jpg', './mapa/13/13b.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 14        ,
-        name: 'Inicio',
+        name: 'Fuentes de los Dragones',
         image: './mapa/14.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -343,7 +379,7 @@ const panoramas = [
     },
     {
         id: 15        ,
-        name: 'Inicio',
+        name: 'Pasillo de la Ofrenda',
         image: './mapa/15.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -355,7 +391,7 @@ const panoramas = [
     },
     {
         id: 16        ,
-        name: 'Inicio',
+        name: 'La Ofrenda',
         image: './mapa/16.jpg',
         music: './audio/11.m4a',
         hotspots: [
@@ -367,14 +403,15 @@ const panoramas = [
             {
                 position: { u: 0.37, v: 0.7 },
                 image: [ './mapa/16/16a.jpg', './mapa/16/16b.jpg', './mapa/16/16c.jpg', './mapa/16/16d.jpg', './mapa/16/16e.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 17        ,
-        name: 'Inicio',
+        name: 'Pasillo Pocito',
         image: './mapa/17.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -386,7 +423,7 @@ const panoramas = [
     },
     {
         id: 18        ,
-        name: 'Inicio',
+        name: 'Atrio Pocito',
         image: './mapa/18.jpg',
         music: './audio/16.m4a', // Change to interior only (When pocito scene is added)
         hotspots: [
@@ -398,18 +435,19 @@ const panoramas = [
             {
                 position: { u: 0.62, v: 0.3 },
                 image: [ './mapa/18/18a.jpg', './mapa/18/18b.jpg', './mapa/18/18c.jpg', './mapa/18/18d.jpg', './mapa/18/18f.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 19        ,
-        name: 'Inicio',
+        name: 'Atrio Indios',
         image: './mapa/19.jpg',
         music: './audio/20.m4a',
         hotspots: [
-            { position: { u: 0.27, v: 0.4 }, target: 1 },
+            { position: { u: 0.27, v: 0.4 }, target: 0 },
             { position: { u: 0.72, v: 0.35 }, target: 192 },
             { position: { u: 0.89, v: 0.35 }, target: 18 }
         ],
@@ -417,14 +455,15 @@ const panoramas = [
             {
                 position: { u: 0.3, v: 0.4 },
                 image: [ './mapa/19/19a.jpg', './mapa/19/19b.jpg', './mapa/19/19c.jpg', './mapa/19/19d.jpg', './mapa/19/19f.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 20        ,
-        name: 'Inicio',
+        name: 'Parroquia de Santa María de Guadalupe',
         image: './mapa/20.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -434,14 +473,15 @@ const panoramas = [
             {
                 position: { u: 0.7, v: 0.3 },
                 image: [ './mapa/20/20a.jpg', './mapa/20/20b.jpg', './mapa/20/20c.jpg', './mapa/20/20d.jpg', './mapa/20/20f.jpg', './mapa/20/20g.jpg', './mapa/20/20h.jpg', './mapa/20/20i.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 21        ,
-        name: 'Inicio',
+        name: 'Antigua Básilica',
         image: './mapa/21.jpg',
         music: './audio/18.m4a',
         hotspots: [
@@ -452,44 +492,50 @@ const panoramas = [
             {
                 position: { u: 0.1, v: 0.6 },
                 image: './mapa/21/21h.jpg' ,
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.18, v: 0.4 },
                 image: [ './mapa/21/21a.jpg', './mapa/21/21b.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.3, v: 0.8 },
                 image: './mapa/21/21c.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.37, v: 0.4 },
                 image: './mapa/21/21d.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.485, v: 0.4 },
                 image: [ './mapa/21/21l.jpg', './mapa/21/21k.jpg', './mapa/21/21i.jpg', ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.78, v: 0.4 },
                 image: [ './mapa/21/21f.jpg', './mapa/21/21g.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 22        ,
-        name: 'Inicio',
+        name: 'Nueva Basílica de Guadalupe',
         image: './mapa/22.jpg',
         music: './audio/6.m4a',
         hotspots: [
@@ -501,38 +547,43 @@ const panoramas = [
             {
                 position: { u: 0.2, v: 0.2 },
                 image: [ './mapa/26/26a.jpg', './mapa/26/26b.jpg',  './mapa/26/26c.jpg',  ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },            
             {
                 position: { u: 0.27, v: 0.2 },
                 image: './mapa/27/27a.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.475, v: 0.3 },
                 image: './mapa/22/22a.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.67, v: 0.2 },
                 image: './mapa/27/27b.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.8, v: 0.2 },
                 image: [ './mapa/25/25a.jpg', './mapa/25/25b.jpg',  './mapa/25/25c.jpg',  ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 23        ,
-        name: 'Inicio',
+        name: 'Bautisterio',
         image: './mapa/23.jpg',
         music: './audio/25.m4a',
         hotspots: [
@@ -542,14 +593,15 @@ const panoramas = [
             {
                 position: { u: 0.8, v: 0.3 },
                 image: [ './mapa/23/23a.jpg', './mapa/23/23b.jpg', './mapa/23/23c.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 24        ,
-        name: 'Inicio',
+        name: 'Tabernaculo',
         image: './mapa/24.jpg',
         music: './audio/26.m4a',
         hotspots: [
@@ -560,14 +612,15 @@ const panoramas = [
             {
                 position: { u: 0.425, v: 0.4 },
                 image: [ './mapa/24/24a.jpg', './mapa/24/24b.jpg', './mapa/24/24c.jpg'],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 112        ,
-        name: 'Inicio',
+        name: 'Escalinatas Tepeyac',
         image: './mapa/112.jpg',
         music: './audio0.mp3',
         hotspots: [
@@ -579,7 +632,7 @@ const panoramas = [
     },
     {
         id: 121        ,
-        name: 'Inicio',
+        name: 'Capilla del Tepeyac',
         image: './mapa/121.jpg',
         music: './audio/15.m4a',
         hotspots: [
@@ -589,32 +642,36 @@ const panoramas = [
             {
                 position: { u: 0.3, v: 0.3 },
                 image: [ './mapa/121/121a.jpg', './mapa/121/121b.jpg', './mapa/121/121e.jpg','./mapa/121/121f.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.47, v: 0.3 },
                 image: [ './mapa/121/121c.jpg', './mapa/121/121g.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.47, v: 0.7 },
                 image: [ './mapa/121/121r.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.9, v: 0.3 },
                 image: [ './mapa/121/121h.jpg', './mapa/121/121d.jpg', './mapa/121/121c.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 162        ,
-        name: 'Inicio',
+        name: 'San Juan Diego',
         image: './mapa/162.jpg',
         music: './audio/12.m4a',
         hotspots: [
@@ -625,14 +682,15 @@ const panoramas = [
             {
                 position: { u: 0.3, v: 0.3 },
                 image: ['./mapa/162/162a.jpg', './mapa/162/162b.jpg', './mapa/162/162c.jpg', './mapa/162/162d.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     },
     {
         id: 182        ,
-        name: 'Inicio',
+        name: 'Capilla del Pocito',
         image: './mapa/182.jpg',
         music: './audio/12.m4a',
         hotspots: [
@@ -642,38 +700,43 @@ const panoramas = [
             {
                 position: { u: 0.47, v: 0.2 },
                 image: './mapa/182/182a.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.17, v: 0.2 },
                 image: './mapa/182/182b.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.27, v: 0.2 },
                 image: './mapa/182/182c.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.67, v: 0.2 },
                 image: './mapa/182/182d.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.9, v: 0.2 },
                 image: './mapa/182/182e.jpg',
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             }
         ]
     }, 
     {
         id: 192        ,
-        name: 'Inicio',
+        name: 'Parroquia de Indios',
         image: './mapa/192.jpg',
         music: './audio/19.m4a',
         hotspots: [
@@ -683,19 +746,22 @@ const panoramas = [
             {
                 position: { u: 0.37, v: 0.3 },
                 image: ['./mapa/192/192b.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.57, v: 0.3 },
                 image: ['./mapa/192/192a.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
                 position: { u: 0.46, v: 0.35 },
                 image: ['./mapa/192/192d.jpg', './mapa/192/192f.jpg', './mapa/192/192g.jpg', './mapa/192/192h.jpg' ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
             },
             {
@@ -711,8 +777,38 @@ const panoramas = [
                     './mapa/192/192k.jpg',
                     './mapa/192/192j.jpg'
                 ],
-                title:  '',
+                video: '',
+                title: '',
                 description:  ''
+            }
+        ]
+    },
+    {
+        id: 0,
+        name: 'Fin del recorrido',
+        image: './mapa/1.jpg',
+        music: './audio/21.m4a',
+        hotspots: [
+            { position: { u: 0.4, v: 0.35 }, target: 22, label: 'Inicio' },
+            { position: { u: 0.5, v: 0.35 }, target: 2 },
+            { position: { u: 0.56, v: 0.35 }, target: 21 },
+            { position: { u: 0.73, v: 0.35 }, target: 20 },
+            { position: { u: 0.85, v: 0.35 }, target: 19 },
+        ],
+        infospots: [             
+            { 
+                position: { u: 0.3, v: 0.2 }, 
+                image: [ './mapa/1/1a.jpg' ],
+                video: '',
+                title: 'Bienvenido al paseo virtual de la Básilica de Guadalupe', 
+                description: 'Para navegar por el recorrido, utiliza el mouse o el touchpad. Haz clic en los puntos de interés para obtener más información.'
+            },
+            { 
+                position: { u: 0.5, v: 0.7 }, 
+                image: '',
+                video: './video/1.mp4',
+                title: '', 
+                description: ''
             }
         ]
     }
@@ -765,7 +861,7 @@ const spriteMaterial = new THREE.SpriteMaterial({
 });
 
 // Animation parameters for hotspots
-const hotspotAnimations = {
+const panoramaButtonProperties = {
     normalScale: new THREE.Vector3(5, 5, 1),
     hoverScale: new THREE.Vector3(6, 6, 1),
 
@@ -782,6 +878,7 @@ const hotspotAnimations = {
 };
 
 const hotspotRadius = 35;
+
 // Function to compute 3D position from UV coordinates for a cylinder
 function computePosition(u, v) {
     const phi = (1 - u) * 2 * Math.PI; // Horizontal angle (0 to 2π)
@@ -795,17 +892,23 @@ function computePosition(u, v) {
     return new THREE.Vector3(x, y, z);
 }
 
+function createPanoramaButton(position, material) {
+    const computedPosition = computePosition(position.u, position.v);
+    const sprite = new THREE.Sprite(material.clone()); // Clone material to avoid sharing
+    sprite.position.copy(computedPosition);
+
+    sprite.scale.copy(panoramaButtonProperties.normalScale);
+    sprite.material.color = panoramaButtonProperties.normalColor.clone();
+
+    return sprite;
+}
+
 function createInfospots(infospots) {
     infospotsGroup.remove(...infospotsGroup.children);
     
     infospots.forEach(infospot => {
-        const position = computePosition(infospot.position.u, infospot.position.v);
-        const sprite = new THREE.Sprite(infoSpriteMaterial.clone()); // Clone material to avoid sharing
-        sprite.position.copy(position);
+        const sprite = createPanoramaButton(infospot.position, infoSpriteMaterial);
 
-        sprite.scale.copy(hotspotAnimations.normalScale);
-        sprite.material.color = hotspotAnimations.normalColor.clone();
-        
         sprite.userData = {
             type: 'infospot',
             title: infospot.title,
@@ -823,24 +926,44 @@ function createInfospots(infospots) {
 // Function to create hotspots
 function createHotspots(hotspots) {
     hotspotsGroup.remove(...hotspotsGroup.children);
+    labelsGroup.clear();
+
+    // Remove existing label elements
+    document.querySelectorAll('.hotspot-label').forEach(label => label.remove());
     
-    hotspots.forEach(hotspot => {
+    hotspots.forEach((hotspot, index) => {
+        console.log('Creating hotspot:', hotspot.label);
         const position = computePosition(hotspot.position.u, hotspot.position.v);
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
 
-        sprite.scale.copy(hotspotAnimations.normalScale);
-        sprite.material.color = hotspotAnimations.normalColor.clone();
+        sprite.scale.copy(panoramaButtonProperties.normalScale);
+        sprite.material.color = panoramaButtonProperties.normalColor.clone();
         
         sprite.userData = { 
             target: hotspot.target, 
             type: 'hotspot',
-
             hovered: false,
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2  
         };
         hotspotsGroup.add(sprite);
+
+    // Text label
+        const pano = panoramas.find(p => p.id === hotspot.target);
+        const div = document.createElement('div');
+        div.className = 'hotspot-label';
+        div.textContent = pano ? `${pano.id} ${pano.name}` : `Scene ${hotspot.target}`;
+        // you can style .hotspot-label in CSS (font, color, background…)
+
+        console.log('Creating label for hotspot:', pano.title, 'at position:', position);
+
+        const label = new CSS2DObject(div);
+        label.position.copy(position.clone().add(new THREE.Vector3(0, -2, 0)).multiplyScalar(1.05)); // Position label slightly above the hotspot
+        // slightly further out so it doesn’t overlap the icon
+        label.userData = { type: 'label' };
+
+        labelsGroup.add(label);
     });
 }
 
@@ -848,6 +971,8 @@ function createHotspots(hotspots) {
 function loadPanorama(panoramaId) {
     const panorama = panoramas.find(p => p.id === panoramaId);
     if (!panorama) return;
+
+    currentPanorama = panoramaId; // Update current panorama ID
 
     // Remove existing hotspots
     hotspotsGroup.remove(...hotspotsGroup.children);
@@ -871,15 +996,21 @@ function loadPanorama(panoramaId) {
         cylinder.material.needsUpdate = true;
 
 		// Update audio when texture loads
-        if (panorama.music && window.changeAudio) {
-            console.log('calling audio change to', panorama.music);
-            window.changeAudio(panorama.music);
+        if (window.changeAudio) {
+            if (panorama.music && panorama.music.trim() !== '') {
+                console.log('calling audio change to', panorama.music);
+                window.changeAudio(panorama.music);
+            }
         }
 
         // Create new hotspots & infospots for this panorama
         createHotspots(panorama.hotspots);
         createInfospots(panorama.infospots);
     });
+
+    // Update camera position
+    camera.lookAt(panorama.hotspots[0].position); // Look straight ahead
+
 }
 
 // Function to extract panorama ID from URL path
@@ -893,6 +1024,20 @@ function getPanoramaIdFromUrl() {
     
     // Parse the ID or default to 1
     return lastNumericSegment ? parseInt(lastNumericSegment, 10) : 1;
+}
+
+let currentPanorama = 0;
+
+function nextPanorama() {
+    // Get the next panorama ID based on current panorama
+    const nextId = (currentPanorama + 1) % panoramas.length;
+    loadPanorama(nextId);
+}
+
+function prevPanorama() {
+    // Get the next panorama ID based on current panorama
+    const nextId = (currentPanorama - 1) % panoramas.length;
+    loadPanorama(nextId);
 }
 
 // Track mouse position for hover effects
@@ -935,12 +1080,15 @@ function updateObjectHoverEffects() {
     
     // Update hotspots animations
     hotspotsGroup.children.forEach(sprite => {
-        updateObjectAnimation(sprite, time, hotspotAnimations);
+        updateObjectAnimation(sprite, time, panoramaButtonProperties);
+        if (sprite.userData.labelElement) {
+            updateLabelPosition(sprite, sprite.userData.labelElement);
+        }
     });
     
     // Update infospots animations
     infospotsGroup.children.forEach(sprite => {
-        updateObjectAnimation(sprite, time, hotspotAnimations);
+        updateObjectAnimation(sprite, time, panoramaButtonProperties);
     });
 }
 
@@ -1014,6 +1162,8 @@ function animate() {
     });
 
     renderer.render(scene, camera);
+
+    labelRenderer.render(scene, camera);
 }
 
 animate();
@@ -1029,6 +1179,9 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    
+  // update label renderer
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // Update mouse position on move
@@ -1140,13 +1293,28 @@ function handleInteraction(event) {
                     dot.addEventListener('click', () => updateCarousel(index));
                 });
             } 
-            else 
-            {
-                // Single image display
-                const img = document.createElement('img');
-                img.src = images[0];
-                img.className = 'carousel-image active';
-                container.appendChild(img);
+            else {
+                // Single Image
+                if (images[0]?.trim() !== '') { // Optional chaining to prevent errors if undefined
+                    console.log('Displaying single image:', images[0]);
+                    const img = document.createElement('img');
+                    img.src = images[0];
+                    img.className = 'carousel-image active';
+                    container.appendChild(img);
+                } else {
+                    console.log('Checking for video');
+                    // Check if video exists and is non-empty after trimming
+                    const videoSrc = object.userData.video?.trim(); // Optional chaining
+                    if (videoSrc) {
+                        const video = document.createElement('video');
+                        video.src = videoSrc;
+                        video.controls = true;
+                        video.className = 'modal-video';
+                        container.appendChild(video);
+                    } else {
+                        console.log('No video available'); // Only logs if video is missing/empty
+                    }
+                }
             }
 
             modal.style.display = 'flex';
@@ -1168,13 +1336,47 @@ function handleInteraction(event) {
 }
 
 window.addEventListener('click', handleInteraction);
-window.addEventListener('touchend', () => { 
-    handleInteraction();
+window.addEventListener('touchend', (event) => { 
+    handleInteraction(event);
     console.log('Touch ended');
 });
 window.addEventListener('touchstart', () => { 
     console.log('Touch started') 
 });
+
+const navigationForward = document.getElementById('navigation-forward');
+navigationForward.addEventListener('click', () => {
+    nextPanorama();
+    console.log('Next panorama');
+});
+
+const navigationBack = document.getElementById('navigation-backward');
+navigationBack.addEventListener('click', () => {
+    prevPanorama();
+    console.log('Previous panorama');
+});
+
+// Function to create label element
+function createLabelElement(text, id) {
+    const label = document.createElement('div');
+    label.className = 'hotspot-label';
+    label.textContent = text;
+    label.id = `label-${id}`;
+    document.body.appendChild(label);
+    return label;
+}
+
+// Function to update label position
+function updateLabelPosition(sprite, label) {
+    const vector = sprite.position.clone();
+    vector.project(camera);
+    
+    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+    const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+    
+    label.style.left = `${x}px`;
+    label.style.top = `${y - 60}px`; // Position above the hotspot
+}
 
 // Load panorama based on URL or default to 1
 loadPanorama(getPanoramaIdFromUrl());

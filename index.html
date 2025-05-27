@@ -1,5 +1,3 @@
-<!-- Old Index -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -83,7 +81,7 @@
       max-height: 200px; /* plenty for 4–5 items */
     }
     #menu-links li {
-      border-bottom: 1px solid #eee;
+      /* border-bottom: 1px solid #eee; */
     }
     #menu-links li:last-child {
       border-bottom: none;
@@ -242,9 +240,16 @@
 
 	.dot.active { background: #717171; }
 
-	@media (max-height: 600px) {
+	@media (max-height: 700px) {
 		#modal-image-container {
 			height: 200px; /* Reduced height for smaller screens */
+		}
+		#playback-controls {
+			margin-bottom: 20px; /* Adjusted for smaller screens */
+		}
+		.to-corner {
+			top: 5% !important; /* Adjusted for smaller screens */
+			left: 50% !important; /* Adjusted for smaller screens */
 		}
 	}
 	/* Playback controls */
@@ -274,9 +279,6 @@
 		min-width: 320px;          /* ensure it doesn’t collapse too small */
 		min-height: 80px;          /* give it some heft */
 	}
-
-
-
 
 	.playback-button {
 		width: 60px;
@@ -375,6 +377,20 @@
 	#current-time {
 		margin-right: auto;
 	}
+
+	.hotspot-label {
+		font-size: 20px;
+		font-family: "Futura Small Caps Light", Arial, sans-serif;
+		color: white;
+		background: rgba(0,0,0,0.6);
+		padding: 2px 6px;
+		border-radius: 4px;
+		white-space: nowrap;
+		justify-content: center;
+		user-select: none;
+		pointer-events: none; /* so clicks “fall through” to the sprite */
+		/* transform: translate(-50%, -100%);  center above the icon */
+	}
     </style>
 	
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -390,7 +406,7 @@
       }
     </script>
   </head>
-  <body>0.1.31
+  <body><!-- 0.1.31 -->
     <!-- Modal -->
     <div id="info-modal" style="display: none;">
       <div class="modal-content">
@@ -441,14 +457,14 @@
 	<div id="player-container">
 		<!-- Playback controls -->
 		<div id="playback-controls">
-			<button id="volume-button" aria-label="Volume" class="playback-button">
+			<button id="navigation-backward" aria-label="Volume" class="playback-button">
 				<img width="20" height="20" src="./arrow-back.svg"></svg>
 			</button>
 			<button id="play-pause-button" aria-label="Play/Pause" class="playback-button"></button>
 			<!-- <button id="volume-button" aria-label="Volume" class="icon-button">
 				<img width="20" height="20" src="./volume.svg"></svg>
 			</button> -->
-			<button id="volume-button" aria-label="Volume" class="playback-button">
+			<button id="navigation-forward" aria-label="Volume" class="playback-button">
 				<img width="20" height="20" src="./arrow-forward.svg"></svg>
 			</button>
 			<div id="volume-popover">
