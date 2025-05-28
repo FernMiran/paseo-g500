@@ -685,8 +685,8 @@ const panoramas = [
         image: './mapa/121.jpg',
         music: './audio/15.m4a',
         hotspots: [
-            { position: { u: 0.9, v: 0.3 }, target: 12 },
-            { position: { u: 0.1, v: 0.3 }, target: 12 }
+            { position: { u: 0.92, v: 0.3 }, target: 12 },
+            { position: { u: 0.07, v: 0.3 }, target: 12 }
         ],
         infospots: [
             {
@@ -713,6 +713,21 @@ const panoramas = [
             {
                 position: { u: 0.85, v: 0.4 },
                 image: [ './mapa/121/121h.jpg', './mapa/121/121d.jpg', './mapa/121/121c.jpg' ],
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.1, v: 0.4 },
+                image: [ 
+                    './mapa/121/121j.jpg', 
+                    './mapa/121/121k.jpg', 
+                    './mapa/121/121l.jpg',
+                    './mapa/121/121m.jpg',
+                    './mapa/121/121n.jpg',
+                    './mapa/121/121o.jpg',
+                    './mapa/121/121p.jpg'
+                ],
                 video: '',
                 title: '',
                 description:  ''
