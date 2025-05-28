@@ -108,6 +108,13 @@ const panoramas = [
                 video: './video/1.mp4',
                 title: '', 
                 description: ''
+            },
+            { 
+                position: { u: 0.2, v: 0.7 }, 
+                image: '',
+                video: './video/2.mp4',
+                title: '', 
+                description: ''
             }
         ]
     },
@@ -471,8 +478,57 @@ const panoramas = [
         ],
         infospots: [
             {
-                position: { u: 0.7, v: 0.3 },
-                image: [ './mapa/20/20a.jpg', './mapa/20/20b.jpg', './mapa/20/20c.jpg', './mapa/20/20d.jpg', './mapa/20/20f.jpg', './mapa/20/20g.jpg', './mapa/20/20h.jpg', './mapa/20/20i.jpg'],
+                position: { u: 0.73, v: 0.3 },
+                image: './mapa/20/20b.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.6, v: 0.7 },
+                image: './mapa/20/20e.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.66, v: 0.4 },
+                image: [ './mapa/20/20i.jpg', './mapa/20/20d.jpg', './mapa/20/20h.jpg' ],
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.72, v: 0.7 },
+                image: './mapa/20/20c.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.5, v: 0.3 },
+                image: './mapa/20/20g.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.57, v: 0.3 },
+                image: './mapa/20/20f.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.1, v: 0.3 },
+                image: './mapa/20/20j.jpg',
+                video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.37, v: 0.4 },
+                image: './mapa/20/20a.jpg',
                 video: '',
                 title: '',
                 description:  ''
@@ -535,7 +591,7 @@ const panoramas = [
     },
     {
         id: 22        ,
-        name: 'Nueva Basílica de Guadalupe',
+        name: 'Nueva Básilica de Guadalupe',
         image: './mapa/22.jpg',
         music: './audio/6.m4a',
         hotspots: [
@@ -912,10 +968,13 @@ function createInfospots(infospots) {
 
         sprite.userData = {
             type: 'infospot',
+
             title: infospot.title,
             description: infospot.description,
-            image: infospot.image,
             
+            image: infospot.image,
+            video: infospot.video,
+
             hovered: false,
             pulsePhase: Math.random() * Math.PI * 2, // Random start phase for pulse animation
             initialYRotation: Math.random() * Math.PI * 2 
@@ -933,7 +992,7 @@ function createHotspots(hotspots) {
     document.querySelectorAll('.hotspot-label').forEach(label => label.remove());
     
     hotspots.forEach((hotspot, index) => {
-        console.log('Creating hotspot:', hotspot.label);
+        console.log('Creating hotspot:', hotspot.target);
         const position = computePosition(hotspot.position.u, hotspot.position.v);
         const sprite = new THREE.Sprite(spriteMaterial.clone());
         sprite.position.copy(position);
@@ -957,7 +1016,7 @@ function createHotspots(hotspots) {
         div.textContent = pano ? `(${pano.id})\n${pano.name}` : `Scene ${hotspot.target}`;
         // you can style .hotspot-label in CSS (font, color, background…)
 
-        console.log('Creating label for hotspot:', pano.title, 'at position:', position);
+        console.log('Creating label:', pano.name, 'at position:', position);
 
         const label = new CSS2DObject(div);
         label.position.copy(position.clone().add(new THREE.Vector3(0, -2, 0)).multiplyScalar(1.05)); // Position label slightly above the hotspot
@@ -1239,10 +1298,11 @@ function handleInteraction(event) {
         else if (object.userData.type === 'infospot') 
         {
             const modal = document.getElementById('info-modal');
+            const video = object.userData.video;
             const images = Array.isArray(object.userData.image) 
                 ? object.userData.image 
                 : [object.userData.image];
-                
+            
             // Update modal content
             modal.querySelector('#modal-title').textContent = object.userData.title;
             modal.querySelector('#modal-description').textContent = object.userData.description;
@@ -1293,21 +1353,21 @@ function handleInteraction(event) {
             else {
                 // Single Image
                 if (images[0]?.trim() !== '') { // Optional chaining to prevent errors if undefined
-                    console.log('Displaying single image:', images[0]);
+                    console.log('Displaying single image', images[0]);
                     const img = document.createElement('img');
                     img.src = images[0];
                     img.className = 'carousel-image active';
                     container.appendChild(img);
                 } else {
-                    console.log('Checking for video');
+                    console.log('Checking for video', video);
                     // Check if video exists and is non-empty after trimming
-                    const videoSrc = object.userData.video?.trim(); // Optional chaining
-                    if (videoSrc) {
-                        const video = document.createElement('video');
-                        video.src = videoSrc;
-                        video.controls = true;
-                        video.className = 'modal-video';
-                        container.appendChild(video);
+                    if (video) {
+                        const videoElement = document.createElement('video');
+                        videoElement.src = video;
+                        videoElement.controls = true;
+                        videoElement.autoplay = true;
+                        videoElement.className = 'modal-video';
+                        container.appendChild(videoElement);
                     } else {
                         console.log('No video available'); // Only logs if video is missing/empty
                     }
