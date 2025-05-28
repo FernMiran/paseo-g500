@@ -101,20 +101,6 @@ const panoramas = [
                 video: '',
                 title: 'Bienvenido al paseo virtual de la Básilica de Guadalupe', 
                 description: 'Para navegar por el recorrido, utiliza el mouse o el touchpad. Haz clic en los puntos de interés para obtener más información.'
-            },
-            { 
-                position: { u: 0.1, v: 0.7 }, 
-                image: '',
-                video: './video/1.mp4',
-                title: '', 
-                description: ''
-            },
-            { 
-                position: { u: 0.2, v: 0.7 }, 
-                image: '',
-                video: './video/2.mp4',
-                title: '', 
-                description: ''
             }
         ]
     },
@@ -341,6 +327,13 @@ const panoramas = [
                 position: { u: 0.1, v: 0.6 },
                 image: [ './mapa/12/12a.jpg', './mapa/12/12b.jpg', './mapa/12/12c.jpg', './mapa/12/12d.jpg'],
                 video: '',
+                title: '',
+                description:  ''
+            },
+            {
+                position: { u: 0.75, v: 0.4 },
+                image: '',
+                video: './video/2.mp4',
                 title: '',
                 description:  ''
             },
@@ -815,15 +808,20 @@ const panoramas = [
                 description:  ''
             },
             {
-                position: { u: 0.46, v: 0.35 },
-                image: ['./mapa/192/192d.jpg', './mapa/192/192f.jpg', './mapa/192/192g.jpg', './mapa/192/192h.jpg' ],
+                position: { u: 0.42, v: 0.3 },
+                image: [
+                    './mapa/192/192d.jpg', 
+                    './mapa/192/192f.jpg',
+                ],
                 video: '',
                 title: '',
                 description:  ''
             },
             {
-                position: { u: 0.5, v: 0.3 },
-                image: [ 
+                position: { u: 0.46, v: 0.35 },
+                image: [
+                    './mapa/192/192g.jpg', 
+                    './mapa/192/192h.jpg',
                     './mapa/192/192i.jpg', 
                     './mapa/192/192q.jpg',
                     './mapa/192/192n.jpg',
@@ -837,7 +835,31 @@ const panoramas = [
                 video: '',
                 title: '',
                 description:  ''
+            },
+            {
+                position: { u: 0.5, v: 0.35 },
+                image: '',
+                video: './video/1.mp4',
+                title: '',
+                description:  ''
             }
+            // {
+            //     position: { u: 0.5, v: 0.3 },
+            //     image: [ 
+            //         './mapa/192/192i.jpg', 
+            //         './mapa/192/192q.jpg',
+            //         './mapa/192/192n.jpg',
+            //         './mapa/192/192o.jpg',
+            //         './mapa/192/192p.jpg',
+            //         './mapa/192/192l.jpg',
+            //         './mapa/192/192m.jpg',
+            //         './mapa/192/192k.jpg',
+            //         './mapa/192/192j.jpg'
+            //     ],
+            //     video: '',
+            //     title: '',
+            //     description:  ''
+            // }
         ]
     },
     {
@@ -1364,8 +1386,9 @@ function handleInteraction(event) {
                     if (video) {
                         const videoElement = document.createElement('video');
                         videoElement.src = video;
-                        videoElement.controls = true;
+                        videoElement.controls = false;
                         videoElement.autoplay = true;
+                        videoElement.loop = true;
                         videoElement.className = 'modal-video';
                         container.appendChild(videoElement);
                     } else {
